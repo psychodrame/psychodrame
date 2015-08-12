@@ -1,0 +1,26 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if f.errors != [] do %>
+    <div class="alert alert-danger">
+      <ul>
+        <%= for {attr, message} <- f.errors do %>
+          <li><%= humanize(attr) %> <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= hidden_input f, :type, value: @type %>
+  <div class="form-group">
+    <%= label f, :title, t(@conn, "title") %>
+    <%= text_input f, :title, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= label f, :submit_to, t(@conn, "tags") %>
+    <%= text_input f, :submit_to, class: "form-control" %>
+  </div>
+  <%= render "form_#{@type}.html", form: f, conn: @conn %>
+
+  <div class="form-group">
+    <%= submit t(@conn, "story.create"), class: "btn btn-primary" %>
+  </div>
+<% end %>

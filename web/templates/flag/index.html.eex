@@ -1,0 +1,36 @@
+<h2>Listing flags</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Text</th>
+      <th>Class</th>
+      <th>Comment</th>
+      <th>Link</th>
+      <th>Hidden</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for flag <- @flags do %>
+    <tr>
+      <td><%= flag.name %></td>
+      <td><em class='flag <%= "flag-"<>flag.name %> <%= flag.class %>'><%= flag.text %></em></td>
+      <td><%= flag.class %></td>
+      <td><%= flag.comment %></td>
+      <td><%= flag.link %></td>
+      <td><%= flag.hidden %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: flag_path(@conn, :show, flag), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: flag_path(@conn, :edit, flag), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: flag_path(@conn, :delete, flag), method: :delete, class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New flag", to: flag_path(@conn, :new) %>

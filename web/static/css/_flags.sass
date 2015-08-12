@@ -1,0 +1,66 @@
+span.flag, em.flag
+  font-style: normal
+  &[class*="level"]
+    &::before
+      content: "["
+      color: grey
+    &::after
+      content: "]"
+      color: grey
+    font-family: monospace
+    font-style: normal
+  &[class*="admin"]
+    color: red
+  &[class*="sitemod"]
+    color: #8904B1
+  &[class*="mod"]
+    color: #088A08
+  &[class*="dev"]
+    color: #58ACFA
+  &[class*="troll"]
+    color: #FE2EF7
+    font-family: "Comic Sans MS"
+  &[class*="submitter"]
+    color: #0101DF
+
+  // TROPHIES
+  &[class*="trophy"]
+    border: 1px solid grey
+    border-radius: 3px
+    padding: 1px
+    font-size: 80%
+  &[class*="apwal"]
+    color: #DF01A5
+    border-color: #F5A9F2
+    text-transform: uppercase
+
+
+.comment
+  &[class*="flagged-admin"] .user a
+    color: red !important
+    font-weight: 600 !important
+  &[class*="flagged-sitemod"] .user a
+    color: #8904B1
+    font-weight: 600
+  &[class*="flagged-mod"] .user a
+    color: #088A08
+    font-weight: 600
+  &[class*="flagged-dev"] .user a
+    color: #58ACFA
+  &[class*="flagged-submitter"] .user a
+    color: #0101DF
+    font-weight: 600
+  &[class*="flagged-troll"] .content
+    font-family: "Comic Sans MS"
+    font-size: 13px
+  &[class*="flagged-comic"] .content
+    font-family: "Comic Sans MS"
+    font-size: 13px
+
+.story-nc
+  &[class*="flagged-admin"] h2 a
+    color: #B40431
+
+.container
+  &[class*="authflag-admin"] header#header
+    border-bottom-color: red

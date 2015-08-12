@@ -1,0 +1,37 @@
+<h2>Show flag</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @flag.name %>
+  </li>
+
+  <li>
+    <strong>Text:</strong>
+    <%= @flag.text %>
+  </li>
+
+  <li>
+    <strong>Class:</strong>
+    <%= @flag.class %>
+  </li>
+
+  <li>
+    <strong>Comment:</strong>
+    <%= @flag.comment %>
+  </li>
+
+  <li>
+    <strong>Link:</strong>
+    <%= @flag.link %>
+  </li>
+
+  <li>
+    <strong>Hidden:</strong>
+    <%= @flag.hidden %>
+  </li>
+
+</ul>
+
+<%= link "Back", to: flag_path(@conn, :index) %>

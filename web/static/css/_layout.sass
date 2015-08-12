@@ -1,0 +1,91 @@
+body, form, ul, table
+  font-family: "Source Sans Pro"
+
+strong
+  font-weight: 600
+
+.container
+  max-width: 900px
+
+form
+  &.link, &.button
+    display: inline
+
+.alert:empty
+  display: none
+
+.header-alert
+  border-top: 0
+  border-top-left-radius: 0
+  border-top-right-radius: 0
+  padding: 10px
+
+/****** LAYOUT: HEADER *
+header#header
+  display: -webkit-box
+  display: -moz-box
+  display: -ms-flexbox
+  display: -webkit-flex
+  display: flex
+  align-items: center
+  border-bottom: 1px solid #e5e5e5
+  h1
+    font-size: 20px
+    margin: 0
+    padding: 0
+    a
+      color: inherit
+      font-weight: 600
+      &:hover
+        text-decoration: none
+    .extra
+      font-weight: 300
+      padding-left: 5px
+  nav
+    a
+      color: grey
+      &.active
+        color: black
+      &:hover
+        text-decoration: none
+        color: #424242
+    &.navigation
+      margin-left: 15px
+      flex-grow: 2
+      a
+        margin-right: 5px
+    &.user
+      align-items: flex-end
+      justify-content: flex-end
+      -webkit-justify-content: flex-end
+      a.self
+        color: black
+
+/****** LAYOUT: INNER *
+#inner
+  margin-top: 20px
+  h2.page-title
+    border-bottom: 1px solid #FAFAFA
+    padding-bottom: 2px
+    margin-bottom: 15px
+  *
+    &:first-child
+      margin-top: 0
+      padding-top: 0
+    &:last-child
+      margin-bottom: 0
+  .sidebar
+    padding: 5px
+
+/****** LAYOUT: FOOTER *
+footer#footer
+  margin-top: 40px
+  font-size: 11px
+  text-align: center
+  margin-bottom: 15px
+  .thanks
+    margin-top: 5px
+  .thanks, .thanks a
+    font-size: 9px
+    color: #D8D8D8
+    text-transform: lowercase

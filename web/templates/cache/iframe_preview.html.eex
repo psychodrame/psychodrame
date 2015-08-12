@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="<%= News.get_env(:static_host, "") <> static_path(@conn, "/css/app.css") %>">
+  </head>
+  <body class="preview-iframe">
+    <div class='preview'>
+      <%= raw @html %>
+    </div>
+  </body>
+</html>

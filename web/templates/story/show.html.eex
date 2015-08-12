@@ -1,0 +1,55 @@
+<div class="story story-<%= @story.type %> story-<%= @story.attrs["type"] || "natype" %> <%= flags_class_for(@story) %>">
+  <header class='header-common'>
+    <div class='pull-right'>
+      <%= for tag <- @story.tags do %>
+        <a href="<%= News.Tag.url(tag) %>" class='tagged'><%= tag.name %></a>
+      <% end %>
+    </div>
+    <span>
+      <%= News.VoteView.vote_form_for(@story, @conn, "inline-huge") %>
+    </span>
+    <%= format_date(@story.inserted_at) %>
+    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %><span class='domain'><%= @story.attrs["domain"] %></span><% end %>
+    <span class="type"><%= t(@conn, "types." <>(@story.attrs["type"] || @story.type)) %></span>
+    <%= user_link(@story.user) %>
+    <%= flags_for(@story) %>
+    <!--<span><%= @story.score||0 %> <%= inflect t(@conn, "votes.point"), @story.score||0 %></span>-->
+  </header>
+  <h1>
+    <%= if @story.type == "link" do %>
+      <%= external_link(@conn, @story.title, to: @story.link) %>
+    <% else %>
+      <%= @story.title %>
+    <% end %>
+  </h1>
+
+  <%= if @story.type == "text" do %>
+    <div class="content"><%= raw (@story.content_html || News.Content.Markdown.to_html(@story.content)) %></div>
+  <% end %>
+  <%= if @story.attrs["type"] == "image" && !@story.attrs["preview_html"] do %>
+    <div class="preview <%= @story.attrs["type"] %>">
+      <img src="<%= News.Story.link_cache_path(@story) %>" />
+    </div>
+  <% end %>
+  <%= if @story.attrs["preview_html"] do %>
+    <iframe class='preview-iframe' src="<%= News.Story.preview_html_url(@story) %>" allowtransparency=true  allowfullscreen scrolling=no></iframe>
+  <% end %>
+
+  <hr />
+
+  <div class="related" style="display:none">
+    <h3>Related stories</h3>
+    <p>No related stories.</p>
+  </div>
+</div>
+
+<div class="comments">
+  <%= if Enum.empty?(@story.comments) do %>
+    <h3><%= t @conn, "comments.no" %> <small>—<%= t @conn, "comments.no_subtext" %></small></h3>
+  <% else %>
+    <h3><%= Enum.count @story.comments %> <%= inflect t(@conn, "comments.comment"), Enum.count(@story.comments) %></h3>
+  <% end %>
+
+  <%= render News.CommentView, "inline_form.html", type: "story", target: @story, conn: @conn %>
+  <%= render News.CommentView, "comments.html", comment: nil, comments: @comments, conn: @conn %>
+</div>

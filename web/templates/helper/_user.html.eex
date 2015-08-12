@@ -1,0 +1,1 @@
+<span class='user'><a href="<%= News.User.url(@user) %>">~<%= @user.username %></a></span>

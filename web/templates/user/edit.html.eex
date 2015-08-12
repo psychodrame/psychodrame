@@ -1,0 +1,44 @@
+<h2 class='page-title'><%= t @conn, "user.your_account" %> <small class='pull-right'><a href="<%=News.User.url(current_user(@conn))%>"><%= current_user(@conn).username %></a></small></h2>
+
+<%= form_for @changeset, user_path(@conn, :update, current_user(@conn)), [method: :patch], fn f -> %>
+  <%= if f.errors != [] do %>
+    <div class="alert alert-danger">
+      <ul>
+        <%= for {attr, message} <- f.errors do %>
+          <li><%= humanize(attr) %> <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class='row'>
+  <fieldset class="col-md-5">
+    <h3><%= t(@conn, "user.profile") %></h3>
+
+    <div class="form-group">
+      <%= label f, :about, t(@conn, "user.about") %>
+      <%= textarea f, :about, class: "form-control" %>
+    </div>
+  </fieldset>
+
+  <fieldset class="col-md-5 col-md-offset-2">
+    <h3><%= t(@conn, "user.settings") %></h3>
+
+    <div class="checkbox"><label>
+      <%= checkbox f, :s_show_thumbnails %> <%= t(@conn, "settings.show_tumbnails") %>
+    </label></div>
+    <div class="checkbox"><label>
+      <%= checkbox f, :s_external_new_tabs %> <%= t(@conn, "settings.external_new_tabs") %>
+    </label></div>
+    <div class="checkbox"><label>
+      <%= checkbox f, :s_list_links_story %> <%= t(@conn, "settings.list_links_story") %>
+    </label></div>
+  </fieldset>
+  <div class="col-md-12">
+    <br /><br />
+  <div class="form-group" style="text-align:center">
+    <%= submit t(@conn, "user.update_account"), class: "btn btn-primary" %>
+  </div>
+  </div>
+</div>
+<% end %>

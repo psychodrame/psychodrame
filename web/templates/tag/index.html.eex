@@ -1,0 +1,3 @@
+<%= for tag <- @tags do %>
+<a href="<%= News.Tag.url(tag) %>"><%= tag.name %></a>
+<% end %>

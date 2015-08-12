@@ -1,0 +1,5 @@
+<h1><%= t @conn, "tag" %>: <%= @tag.name %></h1>
+
+<%= for story <- @stories do %>
+  <%= render News.StoryView, "_item_story.html", story: story, conn: @conn %>
+<% end %>

@@ -1,0 +1,5 @@
+
+  <div class="form-group">
+    <%= label @form, :link, t(@conn, "link") %>
+    <%= text_input @form, :link, class: "form-control" %>
+  </div>

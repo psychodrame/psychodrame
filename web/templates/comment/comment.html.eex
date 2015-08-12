@@ -1,0 +1,21 @@
+<% root_class = if @comment.comment_id, do: "comment-child", else: "comment-root" %>
+<div class="comment <%= root_class %> <%= flags_class_for(@comment) %>">
+  <header class="header-common">
+    <%= News.VoteView.vote_form_for(@comment, @conn, "inline") %>
+    <%= user_link(@comment.user) %>
+    <%= flags_for(@comment) %>
+    <%= format_date(@comment.inserted_at) %>
+    <span><%= @comment.score || '?' %> points</span>
+  </header>
+  <%= unless Enum.empty?(@comment.meta) do %>
+    <ul class='meta'>
+    <%= for meta <- @comment.meta do %><li><%= markdown meta %></li><% end %>
+    </ul>
+  <% end %>
+  <div class='content'><%= raw (@comment.content_html || News.Content.Markdown.to_html(@comment.content)) %></div>
+  <footer>
+    <strong><a href="<%= News.Comment.url(@comment) <> "/reply" %>"><%= t @conn, "comments.reply" %></a></strong>
+    <a href="<%= News.Comment.url(@comment) %>"><%= t @conn, "permalink" %></a>
+  </footer>
+  <%= render News.CommentView, "comments.html", comment: @comment, comments: @comments, conn: @conn %>
+</div>

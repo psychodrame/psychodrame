@@ -1,0 +1,23 @@
+<%= if @comment do %>
+  <h2 class='page-title'><%= t @conn, "comments.comment" %>: <i><a href="<%= News.Story.url(@comment.story) %>"><%= @comment.story.title %></a></i></h1>
+
+  <%= render News.CommentView, "comment.html", comment: @comment, comments: nil, conn: @conn %>
+
+  <h3><%= t @conn, "comments.reply" %></h3>
+
+  <%= render News.CommentView, "inline_form.html", type: "comment", target: @comment, conn: @conn %>
+<% else %>
+  <h2 class='page-title'><%= t @conn, "comments.reply" %></h2>
+  <%= form_for @changeset, comment_path(@conn, :create), fn f -> %>
+    <%= if f.errors != [] do %>
+      <div class="alert alert-danger">
+        <ul>
+          <%= for {attr, message} <- f.errors do %>
+            <li><%= humanize(attr) %> <%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  <% end %>
+
+<% end %>

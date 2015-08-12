@@ -1,0 +1,3 @@
+<%= for story <- @stories do %>
+  <%= render "_item_story.html", story: story, conn: @conn %>
+<% end %>

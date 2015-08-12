@@ -1,0 +1,25 @@
+<h2 class='page-title'><%= t @conn, "story.new_page_title" %> <strong><%= t @conn, @type %><strong>
+<small>
+  <%= if @type == "link" do %>
+    <a href="<%= submit_path(@conn, :new, "text") %>">
+      <%= t @conn, "text" %>
+    </a>
+  <% else %>
+  <a href="<%= submit_path(@conn, :new, "link") %>">
+    <%= t @conn, "link" %>
+  </a>
+  <% end %>
+</small>
+</h2>
+
+<!--<div class="well">
+  <h4>Submission guidelines</h4>
+
+  <ul>
+    <li><strong>Before submitting</strong>, be sure to read <a href="/rules#submission">submission rules</a></li>
+  </ul>
+</div>-->
+
+<%= render "form.html", changeset: @changeset,
+                                 action: story_path(@conn, :create),
+                                 type: @type, conn: @conn %>

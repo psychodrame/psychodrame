@@ -1,0 +1,23 @@
+<div class='story story-wiki-page'>
+  <h1><%= @wiki.title %></h1>
+
+<%= if @wiki.revision_id do %>
+<div class='content'><%= raw @wiki.revision.content_html || "<i>No content</i>" %></div>
+<hr />
+<footer class='wiki-footer'>
+  <p>
+    <%= flags_for(@wiki) %>
+    ·
+    last edited <%= format_date(@wiki.revision.inserted_at) %> by <%= user_link(@wiki.revision.user) %>
+    ·
+    <%= link "edit", to: site_wiki_path(@conn, :edit, @wiki.path) %>
+  </p>
+</footer>
+
+<% else %>
+  <p class='alert alert-danger'>
+    <strong>This wiki has no revision yet.</strong>
+    <%= link "Create the first revision", to: site_wiki_path(@conn, :edit, @wiki.path), class: "btn btn-default btn-xs" %>
+  </p>
+<% end %>
+</div>

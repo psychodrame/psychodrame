@@ -1,0 +1,10 @@
+<footer id="footer">
+  <div class="footer-links">
+  <%= for {title, href} <- app_env(:footer_links) do %>
+    <a href="<%= href %>"><%= title %></a>
+  <% end %>
+  </div>
+  <div class='thanks'>
+    Website thumbnails by <a href="http://www.bitpixels.com/">BitPixels</a>
+  </div>
+</footer>

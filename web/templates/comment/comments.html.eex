@@ -1,0 +1,10 @@
+<%= if @comments != %{} do %>
+  <% comments = if @comment, do: @comments[@comment.id], else: @comments.nil %>
+  <%= if comments do %>
+    <%= for comment <- comments do %>
+      <%= render News.CommentView, "comment.html", comment: comment, comments: @comments, conn: @conn %>
+    <% end %>
+  <% end %>
+<% else %>
+  <!-- no comments :( <p><i>No comments yet.</i></p> -->
+<% end %>

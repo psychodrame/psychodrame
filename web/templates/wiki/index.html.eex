@@ -1,0 +1,7 @@
+<ul>
+  <%= for wiki <- @wikis do %>
+  <li><a href="<%= site_wiki_path(@conn, :show, wiki.path) %>"><%= wiki.title %></a></li>
+  <% end %>
+</ul>
+
+<%= link "New wiki", to: site_wiki_path(@conn, :new) %>

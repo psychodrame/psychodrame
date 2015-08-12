@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= page_title @conn %></title>
+    <%= if @conn.assigns[:meta_description] do %><meta name="description" content="<%= @conn.assigns[:meta_description] %>"><% end %>
+    <%= if @conn.assigns[:meta_keywords] do %><meta name="keywords" content="<%= @conn.assigns[:meta_keywords] %>"><% end %>
+    <%= if @conn.assigns[:meta_author] do %><meta name="author" content="<%= @conn.assigns[:meta_author] %>"><% end %>
+    <%= if @conn.assigns[:canonical] do %><link rel="canonical" href="<%= @conn.assigns[:canonical] %>" /><% end %>
+    <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="<%= News.get_env(:static_host, "") <> static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="container <%= if @conn.assigns[:authflag], do: "authflag-"<>@conn.assigns[:authflag].name %>" role="main">
+      <%= render "_header.html", conn: @conn %>
+
+      <div id="inner"><%= @inner %></div>
+
+      <%= render "_footer.html", conn: @conn %>
+    </div> <!-- /container -->
+
+    <script>window.lng = "<%= @conn.assigns[:lang] %>";</script>
+    <script src="<%= News.get_env(:static_host, "") <> static_path(@conn, "/js/app.js") %>"></script>
+    <script>require("web/static/js/app")</script>
+
+  </body>
+</html>

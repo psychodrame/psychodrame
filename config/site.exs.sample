@@ -1,0 +1,73 @@
+use Mix.Config
+
+# Hostname
+config :news, News.Endpoint,
+  url: [host: "example.com", port: 80]
+
+# Secret key for sessions
+config :news, News.Endpoint,
+  secret_key_base: "some_long_random_string"
+
+# Configure your database
+config :news, News.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres"
+  database: "news",
+  size: 20
+
+# Site configuration
+config :news, :lang, "en"
+config :news, :title, "deadly"
+config :news, :crawler_info_url, "http://deadly.io/p/crawler"
+config :news, :thumbnail_url_prefix, "http://img.bitpixels.com/getthumbnail?code=X&url="
+config :news, :allow_registration, true
+config :news, :footer_links, %{
+  "about" => "/p/about",
+  "rules" => "/p/rules"
+}
+
+# UI Default Settings
+config :news, :ui_default_settings, %{
+  show_thumbnails: true,
+  external_new_tabs: true,
+  list_links_story: false,
+}
+
+# Hashids config
+config :news, :hashid_salts, %{
+  stories:  "some-random-string",
+  comments: "some-other-random-string",
+}
+
+# ContentPipeline definitions
+config :news, :content_pipelines, %{
+  "text" => %{
+              create: [
+                News.Content.Commands.Pipeline,
+                News.Content.Markdown.Pipeline,
+              ],
+              update: [
+                News.Content.Markdown.Pipeline,
+              ],
+            },
+  "link" => %{
+              create: [
+                News.Content.Link.Pipeline
+              ],
+              update: [
+              ],
+            },
+}
+
+# News.Content.Commands
+config :news, :commands, [
+  News.Content.Commands.Flagging,
+  News.Content.Commands.Title,
+  News.Content.Commands.Tagging,
+]
+
+# Cache/Insecure content domain
+# OPTIONAL but it's crazy to not use it in prod
+# Host insecure content on a different domain to avoid XSS vulns and cookie steal
+# config :news, :static_host, "//static.random.sh/deadly.io"

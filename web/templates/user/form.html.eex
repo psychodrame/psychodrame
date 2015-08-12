@@ -1,0 +1,28 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if f.errors != [] do %>
+    <div class="alert alert-danger">
+      <ul>
+        <%= for {attr, message} <- f.errors do %>
+          <li><%= humanize(attr) %> <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= text_input f, :username, class: "form-control", placeholder: t(@conn, "user.username") %>
+  </div>
+
+  <div class="form-group">
+    <%= text_input f, :email, class: "form-control", placeholder: t(@conn, "user.email") %>
+  </div>
+
+  <div class="form-group">
+    <%= password_input f, :password, class: "form-control", placeholder: t(@conn, "user.password") %>
+  </div>
+
+
+  <div class="form-group">
+    <%= submit t(@conn, "register"), class: "btn btn-primary" %>
+  </div>
+<% end %>

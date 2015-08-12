@@ -1,0 +1,21 @@
+<h2 class='page-title'>
+  <%= @user.username %>
+  <%= if logged_in?(@conn) && current_user(@conn).id == @user.id do %>
+    <small>
+      <%= t @conn, "user.own_profile" %>
+      <a href="<%= user_path(@conn, :index) %>"><%= t @conn, "user.settings" %></a>
+    </small>
+  <% end %>
+</h2>
+
+<div class="row">
+  <div class="col-md-8">
+  </div>
+  <div class="col-md-3 col-md-offset 1">
+    <h4><%= t @conn, "user.about" %></h4>
+    <blockquote><%= markdown @user.about||"" %></blockquote>
+    <%= t @conn, "user.member_since" %> <%= format_date(@user.inserted_at) %>
+    <h4><%= t @conn, "flags" %></h4>
+    <%= flags_for(@user, :expand) %>
+  </div>
+</div>

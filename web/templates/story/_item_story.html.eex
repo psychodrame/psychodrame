@@ -1,0 +1,38 @@
+<div class="story-container">
+  <%= News.VoteView.vote_form_for(@story, @conn, "flex-huge") %>
+  <%= if ui_settings(@conn).show_thumbnails do %><div class="thumb"><%= News.StoryView.thumbnail_for(@conn, @story) %></div><% end %>
+
+<div class="story story-nc story-<%= @story.type %> story-<%= @story.attrs["type"] || "natype" %> <%= flags_class_for(@story) %>">
+  <h2>
+    <%= if link_to_external?(@conn, @story) do %>
+      <%= external_link(@conn, @story.title, to: @story.link) %>
+    <% else %>
+      <a href="<%= News.Story.url(@story) %>"><%= @story.title %></a>
+    <% end %>
+    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %><span class='domain'><%= @story.attrs["domain"] %></span><% end %>
+  </h2>
+  <header class="header-common">
+    <%= unless Enum.empty?(@story.tags) do %>
+      <span>
+      <%= for tag <- @story.tags do %>
+        <a href="<%= News.Tag.url(tag) %>" class="tagged"><%= tag.name %></a>
+      <% end %>
+      </span>
+    <% end %>
+    <%= format_date(@story.inserted_at) %>
+    <span class="type"><%= t(@conn, "types." <>(@story.attrs["type"] || @story.type)) %></span>
+    <%= user_link(@story.user) %>
+    <%= flags_for(@story) %>
+    <!--<span><%= @story.score||0 %> <%= inflect t(@conn, "votes.point"), @story.score||0 %></span>-->
+    <span>
+      <a href="<%= News.Story.url(@story) %>">
+      <%= if Enum.empty?(@story.comments) do %>
+        <%= t @conn, "comments.no" %>
+      <% else %>
+        <%= Enum.count @story.comments %> <%= inflect t(@conn, "comments.comment"), Enum.count(@story.comments) %>
+      <% end %>
+      </a>
+    </span>
+  </header>
+</div>
+</div>

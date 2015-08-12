@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-md-3">
+    <h3><%= t @conn, "login" %></h3>
+    <%= form_for @new_changeset, login_path(@conn, :login), [method: :put], fn f -> %>
+      <div class="form-group">
+        <%= text_input f, :username, class: "form-control", placeholder: t(@conn, "user.username") %>
+      </div>
+      <div class="form-group">
+        <%= password_input f, :password, class: "form-control", placeholder: t(@conn, "user.password") %>
+      </div>
+      <div class="form-group">
+        <%= submit t(@conn, "login"), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="col-md-4 col-md-offset-5">
+    <h3><%= t @conn, "register" %></h3>
+    <%= if app_env(:allow_registration) do %>
+      <%= render "form.html", changeset: @new_changeset,
+                              action: user_path(@conn, :create), conn: @conn %>
+    <% else %>
+      <p><i>registrations are closed. :(</i></p>
+    <% end %>
+  </div>
+</div>

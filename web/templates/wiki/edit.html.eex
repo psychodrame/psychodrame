@@ -1,0 +1,31 @@
+<h2><a href="<%= site_wiki_path(@conn, :show, @wiki.path) %>"><%= @wiki.title %></a>: new revision</h2>
+
+<link rel="stylesheet" href="//lab.lepture.com/editor/editor.css" />
+<script type="text/javascript" src="//lab.lepture.com/editor/editor.js"></script>
+<script type="text/javascript" src="//lab.lepture.com/editor/marked.js"></script>
+
+<%= form_for @changeset, site_wiki_path(@conn, :update, @wiki.path), [method: :put, name: :wiki], fn f -> %>
+  <%= if f.errors != [] do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below:</p>
+      <ul>
+        <%= for {attr, message} <- f.errors do %>
+          <li><%= humanize(attr) %> <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group markdown">
+    <%= textarea f, :content, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+var editor = new Editor();
+editor.render();
+</script>

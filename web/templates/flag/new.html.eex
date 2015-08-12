@@ -1,0 +1,6 @@
+<h2>New flag</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: flag_path(@conn, :create) %>
+
+<%= link "Back", to: flag_path(@conn, :index) %>

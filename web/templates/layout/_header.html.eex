@@ -1,0 +1,31 @@
+<header id="header">
+  <div class="brand">
+    <h1><a href="/"><%= app_env(:title, "") %></a><%= if @conn.assigns[:extra_brand] do %><span class='extra'><%= @conn.assigns[:extra_brand] %></span><% end %></h1>
+  </div>
+
+  <nav class="navigation" role="navigation">
+    <a href="<%= root_path(@conn, :frontpage) %>" class="active"><%= t @conn, "popular" %></a>
+    <a href="<%= tag_path(@conn, :index) %>"><%= t @conn, "tags" %></a>
+    <a href="<%= root_path(@conn, :latest) %>"><%= t @conn, "latest" %></a>
+    <a href="<%= submit_path(@conn, :new, "link") %>"><%= t @conn, "submit" %></a>
+  </nav>
+
+  <%= if user = @conn.assigns[:current_user] do %>
+    <nav class="user" role="user-navigation">
+      <a href="<%= News.User.url(user) %>"
+         class="self">
+        ~<%= user.username %></a>
+         <%= if @conn.assigns[:authflag], do: raw "<span class='flag level flag-#{@conn.assigns[:authflag].name}'>"<>@conn.assigns[:authflag].text <>"</span>"%>
+      (0)
+      ·
+      <a href="<%= logout_path(@conn, :logout) %>"><%= t @conn, "logout" %></a>
+    </nav>
+  <% else %>
+    <nav class="user" role="user-navigation">
+      <a href="<%= user_path(@conn, :index) %>"><%= t @conn, "register" %> · <%= t @conn, "login" %></a>
+    </nav>
+  <% end %>
+</header>
+
+<p class="alert header-alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+<p class="alert header-alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>

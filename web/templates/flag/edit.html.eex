@@ -1,0 +1,6 @@
+<h2>Edit flag</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: flag_path(@conn, :update, @flag) %>
+
+<%= link "Back", to: flag_path(@conn, :index) %>

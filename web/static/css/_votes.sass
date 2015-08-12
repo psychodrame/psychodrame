@@ -1,0 +1,78 @@
+/****** VOTES
+/** Votes: general style *
+
+div.vote
+  button, em
+    color: grey
+  button, form
+    padding: 0
+    margin: 0
+    border: 0
+    background-color: transparent
+  span.score
+    display: none
+    color: #D8D8D8
+    &:after
+      content: "" !important
+  button
+    &.upvote
+      color: #BDBDBD
+      &:hover
+        color: green
+    &.upvoted
+      color: green
+    &.downvote
+      color: #E6E6E6
+      &:hover
+        color: red
+    &.downvoted
+      color: red
+
+  /* Inline mode
+  &.vote-inline
+    display: inline
+    form
+      display: inline
+    button
+      width: 13px
+    button.downvote
+      vertical-align: baseline
+
+  /* Inline huge mode
+  &.vote-inline-huge
+    display: inline
+    font-size: 18px
+    margin-right: 3px
+    form, span.score
+      display: inline
+    span.score
+      padding-left: 4px
+      padding-right: 1px
+    button
+      width: 13px
+    button.downvote
+      vertical-align: baseline
+
+  /* Flex mode
+  &.vote-flex
+    line-height: 11px
+    width: 13px
+    button, em
+      display: block
+    button.downvote
+      vertical-align: super
+
+  /* Huge flex mode
+  &.vote-flex-huge
+    flex-shrink: 0
+    line-height: 11px
+    width: 18px
+    font-size: 18px
+    button, em, span.score
+      display: block
+    button.downvote
+      vertical-align: super
+    span.score
+      padding-top: 5px
+      padding-bottom: 5px
+      text-align: center

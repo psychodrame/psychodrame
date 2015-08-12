@@ -1,0 +1,17 @@
+<div class="vote vote-<%= @display %>">
+  <%= form_for @changeset, vote_path(@conn, :create), fn f -> %>
+    <%= hidden_input f, :return_to %>
+    <%= hidden_input f, :vote, value: "1" %>
+    <%= hidden_input f, :votable_type %>
+    <%= hidden_input f, :votable_id %>
+    <button class="upvote <%= if @voted.up do %>upvoted<% end %>" type="submit"><i class="fa fa-chevron-up"></i></button>
+  <% end %>
+  <span class='score'><%= @model.score || 0 %></span>
+  <%= form_for @changeset, vote_path(@conn, :create), fn f -> %>
+    <%= hidden_input f, :return_to %>
+    <%= hidden_input f, :vote, value: "0" %>
+    <%= hidden_input f, :votable_type %>
+    <%= hidden_input f, :votable_id %>
+    <button class="downvote <%= if @voted.down do %>downvoted<% end %>" type="submit"><i class="fa fa-chevron-down"></i></button>
+  <% end %>
+</div>
