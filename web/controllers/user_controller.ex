@@ -66,6 +66,7 @@ defmodule News.UserController do
   end
 
   def show(conn, %{"username" => ["~"<>username]}) do
+    username = String.downcase(username)
     query = from u in User, where: fragment("lower(?)", u.username) == ^username
     user = Repo.one! query
     user = Repo.preload user, :flags
