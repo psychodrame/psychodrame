@@ -13,8 +13,9 @@ defmodule News.TagController do
   end
 
   def show(conn, %{"name" => name}) do
+    name = String.downcase(name)
     tag = Repo.one from t in Tag,
-      where: t.name == ^name,
+      where: fragment("lower(?)", t.name) == ^name,
       preload: [:taggings]
     if tag do
       stories = Repo.all from story in Story,

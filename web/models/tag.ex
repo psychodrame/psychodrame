@@ -30,13 +30,13 @@ defmodule News.Tag do
   end
 
   def find_by_name(tag_name) do
-    query = from t in __MODULE__, where: t.name == ^tag_name
+    tag_name = String.downcase(tag_name)
+    query = from t in __MODULE__, where: fragment("lower(?)", t.name) == ^tag_name
     Repo.one query
   end
 
   def create_or_find_by_name(tag_name) do
-    query = from t in __MODULE__, where: t.name == ^tag_name
-    tag = Repo.one query
+    tag = find_by_name(tag_name)
     if tag do
       tag
     else
