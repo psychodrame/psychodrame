@@ -26,7 +26,7 @@ defmodule News.Tag do
   """
   def changeset(model, params \\ :empty) do
     color = News.Util.RandomColor.get
-    color_bg = "rgb(" <> Enum.join(color[:rgb], ",") <> ")"
+    color_bg = Enum.join(color[:rgb], ",")
     color_fg = if color[:dark], do: "white", else: "black"
     model
     |> cast(params, @required_fields, @optional_fields)
