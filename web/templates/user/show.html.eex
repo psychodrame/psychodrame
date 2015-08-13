@@ -14,6 +14,7 @@
   <div class="col-md-3 col-md-offset 1">
     <h4><%= t @conn, "user.about" %></h4>
     <blockquote><%= markdown @user.about||"" %></blockquote>
+    <strong>score: <%= @user.score %></strong> (<%= @user.score_stories %> · <%= @user.score_comments %>)<br>
     <%= t @conn, "user.member_since" %> <%= format_date(@user.inserted_at) %>
     <h4><%= t @conn, "flags" %></h4>
     <%= flags_for(@user, :expand) %>

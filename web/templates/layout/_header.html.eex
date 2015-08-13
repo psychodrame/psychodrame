@@ -16,7 +16,7 @@
          class="self">
         ~<%= user.username %></a>
          <%= if @conn.assigns[:authflag], do: raw "<span class='flag level flag-#{@conn.assigns[:authflag].name}'>"<>@conn.assigns[:authflag].text <>"</span>"%>
-      (0)
+      <small class="score" title="score (<%= user.score_stories %> · <%= user.score_comments %>)"><%= trunc user.score %></small>
       ·
       <a href="<%= logout_path(@conn, :logout) %>"><%= t @conn, "logout" %></a>
     </nav>

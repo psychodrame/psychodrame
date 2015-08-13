@@ -8,6 +8,9 @@ defmodule News.User do
     field :about, :string
     field :password, :string, virtual: true
     field :lang, :string
+    field :score_stories, :float
+    field :score_comments, :float
+    field :score, :float
 
     has_many :stories, News.Story
     has_many :comments, News.Comment
