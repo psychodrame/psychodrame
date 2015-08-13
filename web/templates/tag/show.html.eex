@@ -1,5 +1,18 @@
-<h1><%= t @conn, "tag" %>: <%= @tag.name %></h1>
+<style type="text/css">
+  .tag h1 {
+    color: <%= @tag.color_fg %>;
+    background-color: <%= @tag.color_bg %>;
+    padding: 5px
+  }
+  .tag h1 em {
+    font-weight: 200
+  }
+</style>
 
-<%= for story <- @stories do %>
-  <%= render News.StoryView, "_item_story.html", story: story, conn: @conn %>
-<% end %>
+<div class="tag">
+  <h1><em>#</em><%= @tag.name %></h1>
+
+  <%= for story <- @stories do %>
+    <%= render News.StoryView, "_item_story.html", story: story, conn: @conn %>
+  <% end %>
+</div>
