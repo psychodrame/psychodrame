@@ -14,9 +14,7 @@
   <header class="header-common">
     <%= unless Enum.empty?(@story.tags) do %>
       <span>
-      <%= for tag <- @story.tags do %>
-        <a href="<%= News.Tag.url(tag) %>" class="tagged"><%= tag.name %></a>
-      <% end %>
+      <%= for tag <- @story.tags do %><%= News.TagView.tag_link(tag) %><% end %>
       </span>
     <% end %>
     <%= format_date(@story.inserted_at) %>

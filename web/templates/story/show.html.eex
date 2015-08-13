@@ -2,7 +2,7 @@
   <header class='header-common'>
     <div class='pull-right'>
       <%= for tag <- @story.tags do %>
-        <a href="<%= News.Tag.url(tag) %>" class='tagged'><%= tag.name %></a>
+        <%= News.TagView.tag_link(tag) %>
       <% end %>
     </div>
     <span>

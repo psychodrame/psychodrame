@@ -2,10 +2,13 @@ defmodule News.Tag do
   use News.Web, :model
   alias News.Tagging
   alias News.Repo
+  require Logger
 
   schema "tags" do
     field :name, :string
     field :description, :string
+    field :color_bg, :string
+    field :color_fg, :string
     has_many :taggings, News.Tagging
     has_many :stories, through: [:taggings, :story]
 
@@ -22,11 +25,16 @@ defmodule News.Tag do
   with no validation performed.
   """
   def changeset(model, params \\ :empty) do
+    color = News.Util.RandomColor.get
+    color_bg = "rgb(" <> Enum.join(color[:rgb], ",") <> ")"
+    color_fg = if color[:dark], do: "white", else: "black"
     model
+    |> cast(params, @required_fields, @optional_fields)
     |> validate_unique(:name, on: News.Repo, downcase: true)
     |> validate_format(:name, ~r/\A[0-9A-Za-z\:]+\z/i)
     |> validate_length(:name, min: 4, max: 35)
-    |> cast(params, @required_fields, @optional_fields)
+    |> put_change(:color_bg, color_bg)
+    |> put_change(:color_fg, color_fg)
   end
 
   def find_by_name(tag_name) do
@@ -40,7 +48,13 @@ defmodule News.Tag do
     if tag do
       tag
     else
-      Repo.insert!(%__MODULE__{name: tag_name})
+      changeset = __MODULE__.changeset(%__MODULE__{}, %{"name" => tag_name})
+      if changeset.valid? do
+        Repo.insert!(changeset)
+      else
+        Logger.error "Invalid changeset for tag create: #{inspect changeset}"
+        false
+      end
     end
   end
 
@@ -49,7 +63,8 @@ defmodule News.Tag do
   end
 
   def submit_story(tag_name, story) do
-    tag = create_or_find_by_name(tag_name)
-    Repo.insert(%Tagging{tag_id: tag.id, story_id: story.id})
+    if tag = create_or_find_by_name(tag_name) do
+      Repo.insert(%Tagging{tag_id: tag.id, story_id: story.id})
+    else false end
   end
 end
