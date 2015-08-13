@@ -9,7 +9,9 @@
       <%= News.VoteView.vote_form_for(@story, @conn, "inline-huge") %>
     </span>
     <%= format_date(@story.inserted_at) %>
-    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %><span class='domain'><%= @story.attrs["domain"] %></span><% end %>
+    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
+      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
+    <% end %>
     <span class="type"><%= t(@conn, "types." <>(@story.attrs["type"] || @story.type)) %></span>
     <%= user_link(@story.user) %>
     <%= flags_for(@story) %>

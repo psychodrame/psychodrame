@@ -1,3 +1,6 @@
+<%= if @conn.assigns[:title] do %>
+  <h2 class='page-title'><%= @conn.assigns[:title] %></h2>
+<% end %>
 <%= for story <- @stories do %>
   <%= render "_item_story.html", story: story, conn: @conn %>
 <% end %>

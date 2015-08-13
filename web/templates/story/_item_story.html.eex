@@ -9,7 +9,9 @@
     <% else %>
       <a href="<%= News.Story.url(@story) %>"><%= @story.title %></a>
     <% end %>
-    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %><span class='domain'><%= @story.attrs["domain"] %></span><% end %>
+    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
+      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
+    <% end %>
   </h2>
   <header class="header-common">
     <%= unless Enum.empty?(@story.tags) do %>

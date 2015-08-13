@@ -25,6 +25,7 @@ defmodule News.Router do
     #get "/", PageController, :index
     get "/", StoryController, :frontpage, as: :root
     get "/latest", StoryController, :latest, as: :root
+    get "/domain/:domain", StoryController, :by_domain, as: :listing
     resources "/stories", StoryController, except: [:index, :new, :show, :create]
     resources "/account", UserController, only: [:index, :create, :update, :delete]
     put "/account", UserController, :login, as: :login
