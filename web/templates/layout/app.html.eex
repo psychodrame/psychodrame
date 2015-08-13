@@ -8,7 +8,8 @@
     <%= if @conn.assigns[:meta_description] do %><meta name="description" content="<%= @conn.assigns[:meta_description] %>"><% end %>
     <%= if @conn.assigns[:meta_keywords] do %><meta name="keywords" content="<%= @conn.assigns[:meta_keywords] %>"><% end %>
     <%= if @conn.assigns[:meta_author] do %><meta name="author" content="<%= @conn.assigns[:meta_author] %>"><% end %>
-    <%= if @conn.assigns[:canonical] do %><link rel="canonical" href="<%= @conn.assigns[:canonical] %>" /><% end %>
+    <%= if @conn.assigns[:canonical] do %><link rel="canonical" href="<%= News.Endpoint.url <> @conn.assigns[:canonical] %>" /><% end %>
+    <%= if @conn.assigns[:noindex] do %><meta name="robots" content="noindex"><% end %>
     <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<%= News.get_env(:static_host, "") <> static_path(@conn, "/css/app.css") %>">
   </head>
