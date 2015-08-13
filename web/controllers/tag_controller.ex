@@ -8,7 +8,11 @@ defmodule News.TagController do
   plug News.Plug.Authenticate, ~w(admin) when action in [:edit, :create, :update, :delete]
 
   def index(conn, _params) do
-    tags = Repo.all(Tag)
+    tags = Repo.all from tag in Tag,
+      left_join: taggings in assoc(tag, :taggings),
+      left_join: story in assoc(taggings, :story),
+      group_by: tag.id,
+      order_by: fragment("round(cast(log(greatest(abs(?), 1)) * sign(?) + (cast(extract(epoch from ?) as integer) - 1134028003) / 45000.0 as numeric), 7) DESC", sum(story.score), sum(story.score), max(story.inserted_at))
     render(conn, "index.html", tags: tags)
   end
 
