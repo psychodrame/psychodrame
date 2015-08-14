@@ -68,7 +68,7 @@ defmodule News.Story do
   def changeset(model, params=%{"type" => "text"}) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_length(:content, min: 140)
+    |> validate_length(:content, min: 5)
     |> News.ContentPipeline.changeset("content", "text", :create)
   end
 
