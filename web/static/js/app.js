@@ -11,7 +11,8 @@ class App {
 
   static init(){
     moment.locale(window.lng);
-    this.initRelativeTimes()
+    this.initRelativeTimes();
+    this.loadMarkdownEditors();
   }
 
   static initRelativeTimes() {
@@ -25,6 +26,29 @@ class App {
       var tz = time.tz('Europe/Paris');
       $(e).html(time.fromNow());
       $(e).attr('title', time.format("LLLL"));
+    })
+  }
+
+  static loadMarkdownEditors() {
+    $('.markdown-editor').each(function(index, element) {
+      var autosave = { enabled: false };
+      var statusbar = ['lines', 'words', 'cursor'];
+      var ref = $(element).attr('data-editor-id');
+      if (ref) {
+        var autosave = { enabled: true, unique_id: ref, delay: 5000};
+        statusbar.unshift('autosave');
+      }
+
+      editor = new SimpleMDE({
+        element: element,
+        spellChecker: false,
+        indentWithTabs: false,
+        autosave: autosave,
+        status: false,
+        //status: statusbar
+      })
+
+      editor.render()
     })
   }
 

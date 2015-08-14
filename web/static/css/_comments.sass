@@ -82,5 +82,17 @@
   form
     padding: 0
     margin: 0
-  .form-group:last-child
-    margin-bottom: 0
+  .form-group
+    margin: 0
+    padding: 0
+  .CodeMirror, .CodeMirror-scroll
+    min-height: 30px
+  .CodeMirror, .editor-toolbar
+    border: none
+    padding: 0
+    &::after
+      display: none
+    &::before
+      display: none
+  .CodeMirror
+    padding: 5px 5px

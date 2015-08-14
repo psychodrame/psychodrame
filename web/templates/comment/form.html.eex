@@ -13,7 +13,7 @@
       </div>
     <% end %>
     <div class="form-group">
-      <%= textarea f, :content, class: "form-control" %>
+      <%= textarea f, :content, class: "form-control markdown-editor", "data-editor-id": "comment_#{@type}_#{News.Hashids.encode(@target)}" %>
     </div>
     <div class="form-group">
       <%= submit t(@conn, "comments.create"), class: "btn btn-primary" %>
