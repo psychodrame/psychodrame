@@ -4,8 +4,8 @@ defmodule News.StoryController do
   alias News.Story
 
   plug :scrub_params, "story" when action in [:create, :update]
-  plug News.Plug.Authenticate when action in [:new, :create]
-  plug News.Plug.Authenticate, ~w(admin) when action in [:edit, :update, :delete]
+  plug News.Plug.Authenticate, [anon: true] when action in [:new, :create]
+  plug News.Plug.Authenticate, [flags: ~w(admin)] when action in [:edit, :update, :delete]
 
   # --- LISTINGS
   def frontpage(conn, _params) do

@@ -5,7 +5,7 @@
     <%= user_link(@comment.user) %>
     <%= flags_for(@comment) %>
     <%= format_date(@comment.inserted_at) %>
-    <span><%= @comment.score || '?' %> points</span>
+    <span class='score'><%= @comment.score || '?' %> points</span>
   </header>
   <%= unless Enum.empty?(@comment.meta) do %>
     <ul class='meta'>

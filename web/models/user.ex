@@ -6,12 +6,13 @@ defmodule News.User do
     field :email, :string
     field :hash, :string
     field :about, :string
-    field :password, :string, virtual: true
     field :lang, :string
     field :score_stories, :float
     field :score_comments, :float
-    field :score, :float
+    field :score, :float, default: 0.0
     field :ip_signup, Ecto.INET
+    field :anon, :boolean, default: false
+    field :password, :string, virtual: true
 
     has_many :stories, News.Story
     has_many :comments, News.Comment
@@ -58,6 +59,8 @@ defmodule News.User do
 
   def build_vote(user, "1"), do: build_vote(user, true)
   def build_vote(user, "0"), do: build_vote(user, false)
+  def build_vote(%__MODULE__{anon: true}, true), do: 0.5
+  def build_vote(%__MODULE__{anon: true}, false), do: 0.2
   def build_vote(user, true), do: 1.0
   def build_vote(user, false), do: -1.0
 

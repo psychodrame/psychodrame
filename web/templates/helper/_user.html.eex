@@ -1,1 +1,5 @@
+<%= if @user.anon do %>
+<span class='user user-anon'>anonymous</span>
+<% else %>
 <span class='user'><a href="<%= News.User.url(@user) %>">~<%= @user.username %></a></span>
+<% end %>

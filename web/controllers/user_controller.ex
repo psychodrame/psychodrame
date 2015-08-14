@@ -7,11 +7,11 @@ defmodule News.UserController do
   alias News.Session
 
   plug :scrub_params, "user" when action in [:create, :update, :login]
-  plug News.Plug.Authenticate, ~w(admin) when action in [:delete]
+  plug News.Plug.Authenticate, [flags: ~w(admin)] when action in [:delete]
 
   # Login/Register page
   def index(conn, _params) do
-    if logged_in?(conn) do
+    if logged_in?(conn) && !current_user(conn).anon do
       changeset = User.changeset(current_user(conn))
       conn
         |> assign(:title, t(conn, "user.your_account"))

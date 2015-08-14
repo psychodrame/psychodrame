@@ -9,8 +9,8 @@
     <a href="<%= root_path(@conn, :latest) %>"><%= t @conn, "latest" %></a>
     <a href="<%= submit_path(@conn, :new, "link") %>"><%= t @conn, "submit" %></a>
   </nav>
-
-  <%= if user = @conn.assigns[:current_user] do %>
+  <% user = @conn.assigns[:current_user] %>
+  <%= if user && !user.anon do %>
     <nav class="user" role="user-navigation">
       <a href="<%= News.User.url(user) %>"
          class="self">
@@ -22,6 +22,8 @@
     </nav>
   <% else %>
     <nav class="user" role="user-navigation">
+      <a class="self">anonymous</a>
+      ·
       <a href="<%= user_path(@conn, :index) %>"><%= t @conn, "register" %> · <%= t @conn, "login" %></a>
     </nav>
   <% end %>

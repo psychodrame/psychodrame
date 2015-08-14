@@ -20,7 +20,7 @@ defmodule News.WikiController do
   alias News.WikiRevision, as: Revision
 
   plug :scrub_params, "wiki" when action in [:create, :update]
-  plug News.Plug.Authenticate, ~w(admin) when not action in [:index, :show]
+  plug News.Plug.Authenticate, [flags: ~w(admin)] when not action in [:index, :show]
   plug __MODULE__.Plug
 
   def index(conn, _params) do

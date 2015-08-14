@@ -5,8 +5,8 @@ defmodule News.CommentController do
   alias News.Comment
 
   plug :scrub_params, "comment" when action in [:create, :update]
-  plug News.Plug.Authenticate when action in [:new, :create]
-  plug News.Plug.Authenticate, ~w(admin) when action in [:edit, :update, :delete]
+  plug News.Plug.Authenticate, [anon: true] when action in [:new, :create]
+  plug News.Plug.Authenticate, [flags: ~w(admin)] when action in [:edit, :update, :delete]
 
   # New form for comment reply
   def new(conn, %{"comment_hash" => hash}) do

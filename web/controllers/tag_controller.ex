@@ -5,7 +5,7 @@ defmodule News.TagController do
   alias News.Story
 
   plug :scrub_params, "tag" when action in [:create, :update]
-  plug News.Plug.Authenticate, ~w(admin) when action in [:edit, :create, :update, :delete]
+  plug News.Plug.Authenticate, [flags: ~w(admin)] when action in [:edit, :create, :update, :delete]
 
   def index(conn, _params) do
     tags = Repo.all from tag in Tag,

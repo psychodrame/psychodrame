@@ -4,7 +4,7 @@ defmodule News.FlagController do
   alias News.Flag
 
   plug :scrub_params, "flag" when action in [:create, :update]
-  plug News.Plug.Authenticate, ~w(admin)
+  plug News.Plug.Authenticate, [flags: ~w(admin)]
 
   def index(conn, _params) do
     flags = Repo.all(Flag)

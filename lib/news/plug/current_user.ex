@@ -6,8 +6,7 @@ defmodule News.Plug.CurrentUser do
   def init(state), do: state
 
   def call(conn, state) do
-    id = Plug.Conn.get_session(conn, :current_user)
-    if id, do: set_current_user(conn, id), else: conn
+    if id = get_session(conn, :current_user), do: set_current_user(conn, id), else: conn
   end
 
   defp set_current_user(conn, user_id) do
@@ -16,9 +15,11 @@ defmodule News.Plug.CurrentUser do
       assign(conn, :current_user, user)
     else
       conn
+      |> put_session(:current_user, nil)
       |> put_flash(:error, t(conn, "alerts.invalid_session"))
       |> redirect(to: "/")
       |> halt
     end
   end
+
 end

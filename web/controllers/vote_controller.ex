@@ -4,7 +4,7 @@ defmodule News.VoteController do
   alias News.Vote
 
   plug :scrub_params, "vote" when action in [:create, :update]
-  plug News.Plug.Authenticate when action in [:create, :update]
+  plug News.Plug.Authenticate, [anon: true] when action in [:create, :update]
 
   def create(conn, %{"vote" => vote_params}) do
     vote = %Vote{Vote.new_for_user(conn.assigns.current_user) | ip: conn.remote_ip}

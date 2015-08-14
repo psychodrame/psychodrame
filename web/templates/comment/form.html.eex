@@ -1,5 +1,4 @@
 <div class="new-comment new-comment-<%= @type %>">
-  <%= if logged_in?(@conn) do %>
     <%= form_for @changeset, comment_path(@conn, :create), fn f -> %>
     <%= hidden_input f, :commentable_type, value: @type %>
     <%= hidden_input f, :commentable_hash, value: News.Hashids.encode(@target) %>
@@ -18,9 +17,6 @@
     <div class="form-group">
       <%= submit t(@conn, "comments.create"), class: "btn btn-primary" %>
     </div>
-    <% end %>
-  <% else %>
-  <p><i><%= t(@conn, "comments.register_to_post") %></i></p>
 <% end %>
 
 </div>
