@@ -54,6 +54,7 @@ defmodule News.StoryController do
       left_join: tag in assoc(taggings, :tag),
       left_join: v in News.Vote, on: v.votable_id == story.id and v.votable_type == "story",
       order_by: [desc: story.inserted_at],
+      where: story.score > -1,
       preload: [user: user, tags: tag, comments: comments, votes: v],
       select: story
     conn
