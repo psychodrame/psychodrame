@@ -56,4 +56,9 @@ defmodule News.User do
 
   def url(model), do: "/~#{model.username}"
 
+  def build_vote(user, "1"), do: build_vote(user, true)
+  def build_vote(user, "0"), do: build_vote(user, false)
+  def build_vote(user, true), do: 1.0
+  def build_vote(user, false), do: -1.0
+
 end

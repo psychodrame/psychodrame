@@ -8,7 +8,7 @@ defmodule News.Comment do
     field :commands, :map, default: %{}
     field :attrs, :map, default: %{}
     field :meta, {:array, :string}, default: []
-    field :score, :integer
+    field :score, :float
     field :ip, Ecto.INET
     belongs_to :comment, News.Comment
     belongs_to :user, News.User

@@ -8,7 +8,10 @@ defmodule News.VoteController do
 
   def create(conn, %{"vote" => vote_params}) do
     vote = %Vote{Vote.new_for_user(conn.assigns.current_user) | ip: conn.remote_ip}
+    vote_value = News.User.build_vote(conn.assigns.current_user, vote_params["vote"])
+    vote_params = Map.put(vote_params, "vote", vote_value)
     changeset = Vote.changeset(vote, vote_params)
+    IO.puts "vote_params #{inspect vote_params}"
     if changeset.valid? do
       vote = Repo.insert!(changeset)
     else

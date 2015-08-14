@@ -2,7 +2,7 @@ defmodule News.Vote do
   use News.Web, :model
 
   schema "votes" do
-    field :vote, :boolean, default: false
+    field :vote, :float, default: 0.0
     field :votable_id, :integer
     field :votable_type, :string
     field :ip, Ecto.INET
@@ -33,10 +33,15 @@ defmodule News.Vote do
   end
 
   def self_vote_on(changeset, type, user) do
-    vote = %__MODULE__{user_id: user.id, votable_type: type, votable_id: changeset.id, vote: true}
+    vote = %__MODULE__{user_id: user.id, votable_type: type, votable_id: changeset.id, vote: News.User.build_vote(user, true)}
     vote = Repo.insert!(vote)
     News.Score.update_score_from_vote(vote)
     changeset
   end
+
+  def up?(%__MODULE__{vote: vote}) when vote > 0, do: true
+  def up?(_), do: false
+  def down?(%__MODULE__{vote: vote}) when vote < 0, do: true
+  def down?(_), do: false
 
 end

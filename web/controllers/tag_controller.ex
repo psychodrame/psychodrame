@@ -29,7 +29,7 @@ defmodule News.TagController do
         left_join: tag in assoc(taggings, :tag),
         left_join: v in News.Vote, on: v.votable_id == story.id and v.votable_type == "story",
         where: taggings.tag_id == ^tag.id and story.score > 0,
-        order_by: fragment("LOG(10,ABS(?)+1)*SIGN(?) + cast(extract(epoch from ?) as integer)/300000 DESC", story.score, story.score, story.inserted_at),
+        order_by: fragment("round(cast(log(greatest(abs(?), 1)) * sign(?) + (cast(extract(epoch from ?) as integer) - 1134028003) / 45000.0 as numeric), 7) DESC", story.score, story.score, story.inserted_at),
         preload: [user: user, tags: tag, comments: comments, votes: v]
       conn
         |> assign(:title, tag.name)

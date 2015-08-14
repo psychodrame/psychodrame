@@ -113,7 +113,7 @@ defmodule News.StoryController do
                             left_join: v in News.Vote, on: v.votable_id == story.id and v.votable_type == "story",
                             left_join: cv in News.Vote, on: v.votable_id == comments.id and v.votable_type == "comment",
                             preload: [user: user, tags: tag, votes: v, comments: [:user, :comment]],
-                            order_by: fragment("LOG(10,ABS(?)+1)*SIGN(?) + cast(extract(epoch from ?) as integer)/300000 DESC", comments.score, comments.score, comments.inserted_at),
+                            order_by: fragment("round(cast(log(greatest(abs(?), 1)) * sign(?) + (cast(extract(epoch from ?) as integer) - 1134028003) / 45000.0 as numeric), 7) DESC", comments.score, comments.score, comments.inserted_at),
                           ), id
     comments = Enum.group_by(story.comments, fn(comment) -> comment.comment_id end)
     if Story.slug(story) == slug do
