@@ -5,6 +5,7 @@ defmodule News.Vote do
     field :vote, :boolean, default: false
     field :votable_id, :integer
     field :votable_type, :string
+    field :ip, Ecto.INET
     belongs_to :user, News.User
 
     timestamps

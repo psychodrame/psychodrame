@@ -11,6 +11,7 @@ defmodule News.Story do
     field :attrs, :map, default: %{}
     field :meta, {:array, :string}, default: []
     field :score, :integer
+    field :ip, Ecto.INET
     belongs_to :user, News.User
     has_many :taggings, News.Tagging
     has_many :tags, through: [:taggings, :tag]

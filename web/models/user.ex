@@ -11,6 +11,7 @@ defmodule News.User do
     field :score_stories, :float
     field :score_comments, :float
     field :score, :float
+    field :ip_signup, Ecto.INET
 
     has_many :stories, News.Story
     has_many :comments, News.Comment

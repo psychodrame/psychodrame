@@ -70,7 +70,7 @@ defmodule News.StoryController do
   def new(conn, _), do: redirect(conn, to: submit_path(conn, :new, "link"))
 
   def create(conn, %{"story" => story_params=%{"type" => type}}) when type in ["text", "link"] do
-    new_story = build(conn.assigns.current_user, :stories)
+    new_story = %Story{build(conn.assigns.current_user, :stories) | ip: conn.remote_ip}
     changeset = Story.changeset(new_story, story_params)
 
     if changeset.valid? do

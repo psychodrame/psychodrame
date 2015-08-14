@@ -51,7 +51,7 @@ defmodule News.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset(:create, %User{}, user_params)
+    changeset = User.changeset(:create, %User{ip_signup: conn.remote_ip}, user_params)
 
     if changeset.valid? do
       new_user = UserPassword.generate_password_and_store_user(changeset)

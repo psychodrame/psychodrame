@@ -52,7 +52,7 @@ defmodule News.Score do
   def update_user_score(user=%User{}) do
     stories = Repo.all from story in Story, where: story.user_id == ^user.id
     comments = Repo.all from story in Comment, where: story.user_id == ^user.id
-    story_score = Enum.reduce(stories, 0.0, fn(story, acc) -> acc + story.score||0 end)
+    story_score = Enum.reduce(stories, 0.0, fn(story, acc) -> acc + (story.score||0) end)
     comm_score = Enum.reduce(comments, 0.0, fn(comment, acc) -> acc + (comment.score||0) end)
     score = comm_score + (story_score*0.5)
     Repo.update!(%User{user | score: score, score_stories: story_score, score_comments: comm_score})

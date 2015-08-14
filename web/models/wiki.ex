@@ -6,6 +6,7 @@ defmodule News.Wiki do
     field :custom_path, :boolean
     field :title, :string
     field :content_html, :string # cached
+    field :ip, Ecto.INET
     belongs_to :tag, News.Tag
     belongs_to :user, News.User
     belongs_to :revision, News.WikiRevision

@@ -9,6 +9,7 @@ defmodule News.WikiRevision do
     field :commands, :map, default: %{}
     field :attrs, :map, default: %{}
     field :meta, {:array, :string}, default: []
+    field :ip, Ecto.INET
     belongs_to :wiki, News.Wiki
     belongs_to :user, News.User
 

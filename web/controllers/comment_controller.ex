@@ -21,7 +21,8 @@ defmodule News.CommentController do
 
   # Commenting on a submission
   def create(conn, %{"comment" => comment_params}) do
-    changeset = Comment.create_changeset(build(conn.assigns.current_user, :comments), comment_params)
+    comment = %Comment{build(conn.assigns.current_user, :comments) | ip: conn.remote_ip}
+    changeset = Comment.create_changeset(comment, comment_params)
     if changeset.valid? do
       comment = changeset
         |> Repo.insert!

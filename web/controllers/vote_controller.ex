@@ -7,7 +7,8 @@ defmodule News.VoteController do
   plug News.Plug.Authenticate when action in [:create, :update]
 
   def create(conn, %{"vote" => vote_params}) do
-    changeset = Vote.changeset(Vote.new_for_user(conn.assigns.current_user), vote_params)
+    vote = %Vote{Vote.new_for_user(conn.assigns.current_user) | ip: conn.remote_ip}
+    changeset = Vote.changeset(vote, vote_params)
     if changeset.valid? do
       vote = Repo.insert!(changeset)
     else

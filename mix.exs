@@ -32,7 +32,9 @@ defmodule News.Mixfile do
     [
       {:phoenix, "~> 0.14"},
       {:phoenix_ecto, "~> 0.5"},
-      {:postgrex, ">= 0.0.0"},
+      #{:postgrex, ">= 0.0.0"},
+      # FIXME Using postgrex master because it supports :inet (PR#92)
+      {:postgrex, github: "ericmj/postgrex", override: true},
       {:phoenix_html, "~> 1.1"},
       {:phoenix_live_reload, "~> 0.4", only: :dev},
       {:cowboy, "~> 1.0"},

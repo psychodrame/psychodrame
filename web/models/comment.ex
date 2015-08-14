@@ -9,6 +9,7 @@ defmodule News.Comment do
     field :attrs, :map, default: %{}
     field :meta, {:array, :string}, default: []
     field :score, :integer
+    field :ip, Ecto.INET
     belongs_to :comment, News.Comment
     belongs_to :user, News.User
     belongs_to :story, News.Story

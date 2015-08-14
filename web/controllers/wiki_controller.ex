@@ -37,7 +37,7 @@ defmodule News.WikiController do
   end
 
   def create(conn, %{"wiki" => wiki_params}) do
-    changeset = Wiki.changeset(%Wiki{}, wiki_params)
+    changeset = Wiki.changeset(%Wiki{ip: conn.remote_ip}, wiki_params)
 
     if changeset.valid? do
       Repo.insert!(changeset)
@@ -65,7 +65,7 @@ defmodule News.WikiController do
   def update(conn, %{"id" => path, "wiki" => wiki_params}) do
     wiki = get_wiki(conn.assigns.wiki_env, path)
     rev_id = if wiki.revision_id, do: (wiki.revision.revision||1)+1, else: 1
-    revision = %Revision{wiki_id: wiki.id, user_id: current_user(conn).id, revision: rev_id}
+    revision = %Revision{wiki_id: wiki.id, user_id: current_user(conn).id, revision: rev_id, ip: conn.remote_ip}
     changeset = Revision.changeset(revision, wiki_params)
 
     if changeset.valid? do
