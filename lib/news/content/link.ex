@@ -81,13 +81,12 @@ defmodule News.Content.Link do
 
     @ok_status [200]
 
-    defp request_result(uri, {:ok, status, headers, client}) when status in @ok_status do
+    defp request_result(string_uri, {:ok, status, headers, client}) when status in @ok_status do
       headers = Enum.into(headers, Map.new)
       {:ok, body} = :hackney.body(client)
-      uri = URI.parse uri
+      uri = URI.parse string_uri
       sha = News.HTTP.body_sha(body)
-      content_type = headers["Content-Type"]
-      type = News.Util.ContentType.get_type(content_type, body)
+      {content_type, type} = News.Util.ContentType.get_type(headers["Content-Type"], body)
       # TODO Check News.Util.DeadSHA
 
       temp_file = News.Util.TempFile.write(sha, body)
@@ -145,15 +144,30 @@ defmodule News.Content.Link do
       #"link[type=text/xml+oembed]",
     ]
 
-    defp process_result(struct, uri) do
+    defp process_result(struct=%__MODULE__{content_type: "text/html"}, uri) do
       # Try OEmbed
       # TODO Support XML OEmbed!
-      oembed = Enum.flat_map(@oembed_discovery_tags, fn(tag) ->
-        Floki.find(struct.body, tag)
-      end)
+      oembed = Enum.flat_map(@oembed_discovery_tags, fn(tag) -> Floki.find(struct.body, tag) end)
       unless Enum.empty?(oembed) do
         oembed(struct, oembed)
       else struct end
+    end
+
+    # GIFs
+    # Note: we could also do this for every "image/*", and store height/width info
+    defp process_result(struct=%__MODULE__{content_type: "image/gif"}, uri) do
+      Logger.debug "Houston we got a gif"
+      identify = :os.cmd(String.to_char_list("identify "<>struct.file)) |> List.to_string |> String.rstrip
+      frames = String.split(identify, "\n")
+      animated = length(frames) > 1
+      [_, _, size | _] = String.split(List.first(frames), " ")
+      [width, height] = String.split(size, "x")
+      type = if animated, do: "animated", else: struct.type
+      %__MODULE__{struct | type: type, thumbnail_url: struct.url}
+    end
+
+    defp process_result(struct, _uri) do
+      struct
     end
 
     defp embed_iframe(class_prefix, src) do

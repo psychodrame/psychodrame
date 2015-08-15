@@ -83,5 +83,6 @@
     audio: "audio",
     video: "vidéo",
     pdf: "pdf",
+    animated: "animé",
   ]
 ]

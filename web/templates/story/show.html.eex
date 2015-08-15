@@ -28,7 +28,7 @@
   <%= if @story.type == "text" do %>
     <div class="content"><%= raw (@story.content_html || News.Content.Markdown.to_html(@story.content)) %></div>
   <% end %>
-  <%= if @story.attrs["type"] == "image" && !@story.attrs["preview_html"] do %>
+  <%= if (@story.attrs["type"] == "image")||(@story.attrs["type"] == "animated") && !@story.attrs["preview_html"] do %>
     <div class="preview <%= @story.attrs["type"] %>">
       <img src="<%= News.Story.link_cache_path(@story) %>" />
     </div>

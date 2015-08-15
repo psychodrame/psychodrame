@@ -18,7 +18,9 @@ defmodule News.CacheController do
     end
     case get_story(hash, slug) do
       {:ok, story} ->
-        if story.type == "link" and story.attrs["type"] == "image" do
+        if story.type == "link" and story.attrs["type"] == "image" || story.attrs["type"] == "animated" do
+          url = story.attrs["preview_url"] || story.link
+          IO.puts "Thumb Origin URL: #{url}"
           case proxy_request(story.attrs["preview_url"] || story.link) do
             {:ok, content_type, body} ->
               conn
@@ -50,12 +52,24 @@ defmodule News.CacheController do
     end
     case get_story(hash, slug) do
       {:ok, story} ->
+        IO.puts "Thumb Origin URL: #{inspect Story.thumbnail_url(story)}"
         case proxy_request(Story.thumbnail_url(story)) do
           {:ok, content_type, body} ->
+            # BUILD THUMB! :D
+            sha = News.HTTP.body_sha(body)
+            file = News.Util.TempFile.write(sha, body)
+            thumb = file <> "_thumb.jpg"
+            convert_opts = "-strip -interlace Plane -quality 85% -resize x70"
+            optim_opts = "--max=85 --all-progressive"
+            [] = :os.cmd(String.to_char_list("convert #{file}[0] #{convert_opts} #{thumb}"))
+            :os.cmd(String.to_char_list("jpegoptim --strip-com --strip-exif #{optim_opts} #{thumb}"))
+            data = File.read!(thumb)
+            News.Util.TempFile.attach(thumb)
+
             conn
-              |> set_cache(News.HTTP.body_sha(body))
+              |> set_cache(News.HTTP.body_sha(data))
               |> put_resp_content_type(content_type)
-              |> send_resp(200, body)
+              |> send_resp(200, data)
           {:error, error} ->
             conn
               |> set_cache(:error)

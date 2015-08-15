@@ -6,7 +6,7 @@ A reddit-like app.
 
 ### installation
 
-Dependencies: Elixir 1.x, PostgreSQL 9.4+, NodeJS, libsass,
+Dependencies: Elixir 1.x, PostgreSQL 9.4+, NodeJS, libsass, a web + caching server, ImageMagick, JPEGoptim.
 
 1. Install dependencies: `mix deps.get && npm install`
 2. Configure: `cp config/site.exs.sample config/site.exs && $EDITOR config/site.exs`
