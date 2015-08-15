@@ -4,7 +4,7 @@ defmodule News.StoryView do
 
   def link_to_external?(conn, story) do
     external_link_types = ~w(link)
-    internal_attr_types = ~w(image)
+    internal_attr_types = ~w(image animated)
     !ui_settings(conn).list_links_story &&
     story.type in external_link_types &&
     not story.attrs["type"] in internal_attr_types &&
