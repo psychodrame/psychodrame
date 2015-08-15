@@ -79,7 +79,7 @@ defmodule News.Story do
   # Note: this is totally dumb and supposed to be used only when the link can be cached
   def link_cache_path(model, path \\ "cached") do
     if model.link do
-      extension = Path.extname(model.link)
+      extension = if path == "thumb", do: ".jpg", else: Path.extname(model.link)
       static_host_base <> url(model) <> path <> extension
     end
   end

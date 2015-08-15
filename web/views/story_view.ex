@@ -11,7 +11,6 @@ defmodule News.StoryView do
     !story.attrs["preview_html"]
   end
 
-  def thumbnail_for(conn, story=%Story{type: "link", attrs: %{"type" => "image"}}), do: thumb_img_tag(News.Story.link_cache_path(story))
   def thumbnail_for(conn, story), do: thumbnail_cache_url(story)
 
   defp thumb_img_tag(url), do: raw("<img src=\"#{url}\"/>")

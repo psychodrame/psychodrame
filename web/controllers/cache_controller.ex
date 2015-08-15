@@ -20,7 +20,6 @@ defmodule News.CacheController do
       {:ok, story} ->
         if story.type == "link" and story.attrs["type"] == "image" || story.attrs["type"] == "animated" do
           url = story.attrs["preview_url"] || story.link
-          IO.puts "Thumb Origin URL: #{url}"
           case proxy_request(story.attrs["preview_url"] || story.link) do
             {:ok, content_type, body} ->
               conn
@@ -52,7 +51,6 @@ defmodule News.CacheController do
     end
     case get_story(hash, slug) do
       {:ok, story} ->
-        IO.puts "Thumb Origin URL: #{inspect Story.thumbnail_url(story)}"
         case proxy_request(Story.thumbnail_url(story)) do
           {:ok, content_type, body} ->
             # BUILD THUMB! :D
