@@ -96,65 +96,65 @@ defmodule News.Content.Link do
         content_type: content_type, body: body}
     end
 
-      defp request_result(uri, {:ok, status, headers, _}), do: %__MODULE__{valid: false, error: {:status,status}, status: status}
-      defp request_result(uri, {:error, reason}), do: %__MODULE__{valid: false, error: {:fetch_error,reason}}
+    defp request_result(uri, {:ok, status, headers, _}), do: %__MODULE__{valid: false, error: {:status,status}, status: status}
+    defp request_result(uri, {:error, reason}), do: %__MODULE__{valid: false, error: {:fetch_error,reason}}
 
-      # YouTube Embed
-      defp process_result(struct, %URI{host: "youtube.com", path: "/watch", query: query}) do
-        qs = URI.decode_query(query)
-        if id = qs["v"] do
-          html = embed_iframe("youtube", "//www.youtube.com/embed/#{id}")
-          thumb = "https://img.youtube.com/vi/#{id}/default.jpg"
+    # YouTube Embed
+    defp process_result(struct, %URI{host: "youtube.com", path: "/watch", query: query}) do
+      qs = URI.decode_query(query)
+      if id = qs["v"] do
+        html = embed_iframe("youtube", "//www.youtube.com/embed/#{id}")
+        thumb = "https://img.youtube.com/vi/#{id}/default.jpg"
+        %__MODULE__{struct | type: "video", preview: html, thumbnail_url: thumb}
+      else struct end
+    end
+
+    # Vimeo Embed
+    defp process_result(struct, uri=%URI{host: "vimeo.com"}) do
+      case Regex.run(~r/\/(\d+)/, uri.path) do
+        [_, id] ->
+          html = embed_iframe("vimeo", "https://player.vimeo.com/video/#{id}?byline=0&portrait=0")
+
+          # API Call because thumbnail
+          api = News.HTTP.json_query("https://vimeo.com/api/v2/video/#{id}.json")
+          thumb = if api.ok do
+            body = List.first(api.body)
+            body["thumbnail_small"]
+          else nil end
+
           %__MODULE__{struct | type: "video", preview: html, thumbnail_url: thumb}
-        else struct end
+        _ -> struct
       end
+    end
 
-      # Vimeo Embed
-      defp process_result(struct, uri=%URI{host: "vimeo.com"}) do
-        case Regex.run(~r/\/(\d+)/, uri.path) do
-          [_, id] ->
-            html = embed_iframe("vimeo", "https://player.vimeo.com/video/#{id}?byline=0&portrait=0")
-
-            # API Call because thumbnail
-            api = News.HTTP.json_query("https://vimeo.com/api/v2/video/#{id}.json")
-            thumb = if api.ok do
-              body = List.first(api.body)
-              body["thumbnail_small"]
-            else nil end
-
-            %__MODULE__{struct | type: "video", preview: html, thumbnail_url: thumb}
-          _ -> struct
-        end
+    # dailymotion Embed
+    defp process_result(struct, uri=%URI{host: "dailymotion.com"}) do
+      case Regex.run(~r/\/video\/([a-z0-9]+)_.*/, uri.path) do
+        [_, id] ->
+          html = embed_iframe("dailymotion", "//www.dailymotion.com/embed/video/#{id}")
+          thumb = "http://www.dailymotion.com/thumbnail/video/#{id}"
+          %__MODULE__{struct | type: "video", preview: html, thumbnail_url: thumb}
+        _ -> struct
       end
+    end
 
-      # dailymotion Embed
-      defp process_result(struct, uri=%URI{host: "dailymotion.com"}) do
-        case Regex.run(~r/\/video\/([a-z0-9]+)_.*/, uri.path) do
-          [_, id] ->
-            html = embed_iframe("dailymotion", "//www.dailymotion.com/embed/video/#{id}")
-            thumb = "http://www.dailymotion.com/thumbnail/video/#{id}"
-            %__MODULE__{struct | type: "video", preview: html, thumbnail_url: thumb}
-          _ -> struct
-        end
-      end
+    @oembed_discovery_tags [
+      "link[type=application/json+oembed]",
+      "link[type=text/json+oembed]",
+      #"link[type=application/xml+oembed]",
+      #"link[type=text/xml+oembed]",
+    ]
 
-      @oembed_discovery_tags [
-        "link[type=application/json+oembed]",
-        "link[type=text/json+oembed]",
-        #"link[type=application/xml+oembed]",
-        #"link[type=text/xml+oembed]",
-      ]
-
-      defp process_result(struct, uri) do
-        # Try OEmbed
-        # TODO Support XML OEmbed!
-        oembed = Enum.flat_map(@oembed_discovery_tags, fn(tag) ->
-          Floki.find(struct.body, tag)
-        end)
-        unless Enum.empty?(oembed) do
-          oembed(struct, oembed)
-        else struct end
-      end
+    defp process_result(struct, uri) do
+      # Try OEmbed
+      # TODO Support XML OEmbed!
+      oembed = Enum.flat_map(@oembed_discovery_tags, fn(tag) ->
+        Floki.find(struct.body, tag)
+      end)
+      unless Enum.empty?(oembed) do
+        oembed(struct, oembed)
+      else struct end
+    end
 
     defp embed_iframe(class_prefix, src) do
       fullscreen = "webkitallowfullscreen mozallowfullscreen allowfullscreen"
