@@ -47,6 +47,8 @@ defmodule News.Mixfile do
       {:linguist, "~> 0.1.5"},
       {:hackney, github: "benoitc/hackney"},
       {:floki, "~> 0.3.2"},
+      {:exredis, ">= 0.2.0"},
+      {:poolboy, "~> 1.4"},
    ]
   end
 end

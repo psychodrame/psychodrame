@@ -3,6 +3,7 @@ defmodule News.Link do
 
   alias __MODULE__
   alias News.HTTP
+  alias News.RedisCache
   alias News.Util.URIFilter
   alias News.Util.ContentType
   alias News.Util.TempFile
@@ -19,10 +20,12 @@ defmodule News.Link do
   def process(uri) do
     filtered_uri = URIFilter.transform(URI.parse(uri))
     str_uri = URIFilter.uri_to_string(filtered_uri)
-    headers = [{"user-agent", user_agent(:check)}]
-    options = [:insecure, {:follow_redirect, true}]
-    request_result(filtered_uri, :hackney.request(:get, str_uri, headers, "", options))
-      |> process_result(filtered_uri)
+    RedisCache.cached(str_uri, fn() ->
+      headers = [{"user-agent", user_agent(:check)}]
+      options = [:insecure, {:follow_redirect, true}]
+      request_result(filtered_uri, :hackney.request(:get, str_uri, headers, "", options))
+        |> process_result(filtered_uri)
+    end)
   end
 
   @ok_status [200]

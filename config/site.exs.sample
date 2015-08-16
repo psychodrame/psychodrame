@@ -16,6 +16,14 @@ config :news, News.Repo,
   database: "news",
   size: 20
 
+# Redis -- exredis options, see http://hexdocs.pm/exredis/
+config :news, :redis,
+  host: "127.0.0.1",
+  port: 6379,
+  database: 0,
+  password: "",
+  reconnect_sleep: :no_reconnect
+
 # Site configuration
 config :news, :lang, "en"
 config :news, :title, "deadly"

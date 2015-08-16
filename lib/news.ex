@@ -11,8 +11,11 @@ defmodule News do
       supervisor(News.Endpoint, []),
       # Start the Ecto repository
       worker(News.Repo, []),
-      # Here you could define other workers and supervisors as children
-      # worker(News.Worker, [arg1, arg2, arg3]),
+
+      # Redis Poolboy
+      :poolboy.child_spec(:redis,
+                          [name: {:local,:redis}, worker_module: News.RedisClient, size: 10, max_overflow: 5],
+                          get_env(:redis))
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -59,6 +62,19 @@ defmodule News do
   def user_agent(bot) do
     [name, comment] = @user_agent_bots[bot]
     "Mozilla/5.0 (compatible; Erlang) Psychodrame#{name}/#{version} (#{comment}; #{Application.get_env(:news,:title)}; +#{Application.get_env(:news,:crawler_info_url)})"
+  end
+
+  defmodule RedisClient do
+    # Wrapper to make Poolboy play nice with Exredis
+    @moduledoc false
+    def start_link(args) do
+      host = Dict.get(args, :host)
+      port = Dict.get(args, :port)
+      database = Dict.get(args, :database)
+      password = Dict.get(args, :password)
+      reconnect_sleep = Dict.get(args, :reconnect_sleep)
+      Exredis.start_link(host, port, database, password, reconnect_sleep)
+    end
   end
 
 end
