@@ -65,7 +65,7 @@ defmodule News.CacheController do
             News.Util.TempFile.attach(thumb)
 
             conn
-              |> set_cache(News.HTTP.body_sha(data))
+              |> set_cache(sha)
               |> put_resp_content_type(content_type)
               |> send_resp(200, data)
           {:error, error} ->
