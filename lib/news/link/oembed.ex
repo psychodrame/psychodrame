@@ -43,28 +43,33 @@ defmodule News.Link.OEmbed do
   # TODO Support XML OEmbed
   # TODO Support pre-defined oEmbed endpoints without discovery
   # TODO Support noembed.com
-  def process_link(link=%Link{}) do
-    discovery = Enum.flat_map(@discovery_tags, fn(tag) -> Floki.find(link.body, tag) end)
+  def process_link(link=%Link{final: false, body: body}) do
+    discovery = Enum.flat_map(@discovery_tags, fn(tag) -> Floki.find(body, tag) end)
     case List.first(discovery) do
       {"link", discovery, _} ->
         discovery = Enum.into(discovery, %{})
-        process_oembed(link, discovery["href"], HTTP.json_query(discovery["href"]))
+        process_oembed(link, discovery["href"], HTTP.get_json(discovery["href"]))
       _ -> link
     end
+  end
+
+  def process_link(link) do
+    Logger.debug "News.Link.oEmbed skipping for #{inspect link}"
+    link
   end
 
   defp process_oembed(link, oembed_url, %{ok: true, body: oembed}) do
     oembed_url = URI.parse(oembed_url)
     type = @embeds_types[oembed_url.host] || link.type
-    link = %Link{link | type: type}
+    link = %Link{link | type: type, final: true}
     case oembed["type"] do
       "rich" ->
-        %Link{link | preview: oembed["html"], thumbnail_url: oembed["thumbnail_url"]}
+        %Link{link | preview_html: oembed["html"], thumbnail_url: oembed["thumbnail_url"]}
       "photo" ->
-        %Link{link | type: "image", url: oembed["url"], thumbnail_url: oembed["thumbnail_url"]}
+        %Link{link | type: "image", preview_url: oembed["url"], thumbnail_url: oembed["thumbnail_url"] || oembed["url"]}
       _ ->
         Logger.warn "[News.Link] oEmbed unhandled type: #{inspect oembed}"
-        link
+        %Link{link | final: false}
     end
   end
 

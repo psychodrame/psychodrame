@@ -1,15 +1,10 @@
 defmodule News.Content.Link do
   @moduledoc """
-  Validates and extracts link information:
-  * validate it is not a dead link
-  * stores content-type
-  * tbd
+  Validates and stores link information
   """
 
-  # TODO: Do a HEAD before the get
-  # TODO: Limit request size / request time
+  # TODO: Limit -request size-(ok) / request time
   # TODO: Make it run in a separate process
-  # TODO: Cache results for later user (if used without a model, e.g. live validation)
 
   @allowed_schemes ~w(http https)
 
@@ -36,31 +31,32 @@ defmodule News.Content.Link do
     end
 
     def validate_fetch(changeset, context) do
-      meta = News.Link.process(get_field(changeset, context.field))
-      if meta.valid do
-        preview_url = if context.value != meta.url, do: meta.url, else: nil
+      link = News.Link.process(get_field(changeset, context.field))
+      if link.valid do
         attrs = get_field(changeset, :attrs)
-          |> Map.put("http_status", meta.status)
-          |> Map.put("domain", meta.domain)
-          |> Map.put("sha", meta.sha)
-          |> Map.put("content_type", meta.content_type)
-          |> Map.put("type", meta.type)
-          |> Map.put("thumbnail_url", meta.thumbnail_url)
-          |> Map.put("preview_url", preview_url)
-          |> Map.put("preview_html", meta.preview)
+          |> Map.put("http_status", link.status)
+          |> Map.put("domain", link.domain)
+          |> Map.put("sha", link.sha)
+          |> Map.put("content_type", link.content_type)
+          |> Map.put("type", link.type)
+          |> Map.put("thumbnail_url", link.thumbnail_url)
+          |> Map.put("preview_url", link.preview_url)
+          |> Map.put("preview_html", link.preview_html)
         News.Util.TempFile.release
         put_change(changeset, :attrs, attrs)
       else
-        case meta.error do
-          {:status, s} -> add_error(changeset, context.field, "link crawl returned status #{s}")
-          {:fetch_error, err} -> add_error(changeset, context.field, "link crawl failed: #{inspect err}")
+        reason = case link.error do
+          {:status, status} -> "link returned http status #{status}"
+          {:fetch_error, error} -> "link crawl failed: #{inspect error}"
+          error -> "link processing failed: #{inspect error}"
         end
+        add_error(changeset, context.field, reason)
       end
     end
 
     def after_save(changeset, _), do: changeset
 
-    def finalize(model, context) do
+    def finalize(model, _) do
       model
     end
   end
