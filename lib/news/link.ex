@@ -7,10 +7,10 @@ defmodule News.Link do
   alias News.Util.URIFilter
   alias News.Util.ContentType
   alias News.Util.TempFile
-  import News, only: [user_agent: 1]
   require Logger
 
   @max_content_length 3125000 # 25Mb
+  @process_timeout 5000
 
   defstruct valid: false,
             error: nil,
@@ -35,19 +35,29 @@ defmodule News.Link do
     filtered_uri = URIFilter.transform(URI.parse(uri))
     str_uri = URIFilter.uri_to_string(filtered_uri)
     link = %Link{valid: false, original_url: uri, url: filtered_uri, url_string: str_uri, domain: filtered_uri.host}
-    # TODO: Isolate into a separate process and restrict it to a fixed duration
-    # (to avoid files that are too big to fetch, ...)
-    RedisCache.cached(str_uri, fn() -> request_and_process(link) end)
+
+    RedisCache.cached(str_uri, fn() ->
+      # Spawn process
+      parent = self
+      {pid, _ref} = spawn_monitor(fn() ->
+        result = Link.request_and_process(link)
+        send(parent, {:result, result})
+      end)
+
+      # Wait for result
+      wait_for_result(link, pid)
+    end)
   end
 
-  defp request_and_process(link) do
+  def request_and_process(link) do
     link
       |> request_head(News.HTTP.head(link.url_string))
       |> process_link
   end
 
+  # TODO: Extract Content-Type from header
   defp request_head(link, http=%HTTP{ok: true}) do
-    length = Dict.get(http.headers, "Content-Length", 0) |> String.to_integer
+    length = Dict.get(http.headers, "Content-Length", "0") |> String.to_integer
     if length < @max_content_length do
       request_get(link, News.HTTP.head(link.url_string))
     else
@@ -107,6 +117,19 @@ defmodule News.Link do
   # Catch-all, doing nothing
   defp process_link(link) do
     Logger.warn "News.Link/process_link: unmatched link, #{inspect link}"
+    link
+  end
+
+  # TODO: Allow incremental updates from process and return it instead of an error when timeouting
+  defp wait_for_result(link, pid) do
+    link = receive do
+      {:result, link} -> link
+      _ -> wait_for_result(link, pid)
+    after
+      @process_timeout ->
+        %Link{link | error: "processing timeout exceeded (5s)"}
+    end
+    if Process.alive?(pid), do: Process.exit(pid, :kill)
     link
   end
 

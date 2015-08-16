@@ -3,9 +3,6 @@ defmodule News.Content.Link do
   Validates and stores link information
   """
 
-  # TODO: Limit -request size-(ok) / request time
-  # TODO: Make it run in a separate process
-
   @allowed_schemes ~w(http https)
 
   def allowed_schemes, do: @allowed_schemes
