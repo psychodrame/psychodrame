@@ -46,6 +46,28 @@ defmodule News.StoryController do
       end
   end
 
+  def by_type(conn, %{"type" => type}) do
+    type = String.downcase(type)
+    stories = Repo.all from story in Story,
+      left_join: user in assoc(story, :user),
+      left_join: comments in assoc(story, :comments),
+      left_join: taggings in assoc(story, :taggings),
+      left_join: tag in assoc(taggings, :tag),
+      left_join: v in News.Vote, on: v.votable_id == story.id and v.votable_type == "story",
+      order_by: fragment("round(cast(log(greatest(abs(?), 1)) * sign(?) + (cast(extract(epoch from ?) as integer) - 1134028003) / 45000.0 as numeric), 7) DESC", story.score, story.score, story.inserted_at),
+      where: story.score > 0 and (story.type == ^type or fragment("?->'type'", story.attrs) == ^type),
+      preload: [user: user, tags: tag, comments: comments, votes: v],
+      select: story
+
+    if Enum.empty?(stories) do
+      error_not_found(conn)
+    else
+      conn
+        |> assign(:title, "type: #{type}")
+        |> render("frontpage.html", stories: stories)
+      end
+  end
+
   def latest(conn, _params) do
     stories = Repo.all from story in Story,
       left_join: user in assoc(story, :user),

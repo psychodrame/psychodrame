@@ -11,6 +11,11 @@ defmodule News.StoryView do
     !story.attrs["preview_html"]
   end
 
+  def show_story_type_or_domain?(story) do
+    type = Story.type_or_subtype(story)
+    !(type == "link" && story.attrs && Map.has_key?(story.attrs, "domain"))
+  end
+
   def thumbnail_for(conn, story), do: thumbnail_cache_url(story)
 
   defp thumb_img_tag(url), do: raw("<img src=\"#{url}\"/>")

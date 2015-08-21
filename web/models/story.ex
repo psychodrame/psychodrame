@@ -44,6 +44,8 @@ defmodule News.Story do
       |> News.ContentPipeline.finalize("link", "link", action)
   end
 
+  def type_or_subtype(story), do: story.attrs["type"] || story.type
+
   @doc """
   Creates a changeset based on the `model` and `params`.
 

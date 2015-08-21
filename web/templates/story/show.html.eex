@@ -9,13 +9,10 @@
       <%= News.VoteView.vote_form_for(@story, @conn, "inline-huge") %>
     </span>
     <%= format_date(@story.inserted_at) %>
-    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
-      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
-    <% end %>
-    <span class="type"><%= t(@conn, "types." <>(@story.attrs["type"] || @story.type)) %></span>
+    <span class="type"><a href="/type/<%= Story.type_or_subtype(@story) %>"><%= t(@conn, "types." <> Story.type_or_subtype(@story)) %></a></span>
+    <span class="domain"><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
     <%= user_link(@story.user) %>
     <%= flags_for(@story) %>
-    <!--<span><%= @story.score||0 %> <%= inflect t(@conn, "votes.point"), @story.score||0 %></span>-->
   </header>
   <h1>
     <%= if @story.type == "link" do %>
@@ -38,11 +35,6 @@
   <% end %>
 
   <hr />
-
-  <div class="related" style="display:none">
-    <h3>Related stories</h3>
-    <p>No related stories.</p>
-  </div>
 </div>
 
 <div class="comments">

@@ -16,16 +16,14 @@
       <%= for tag <- @story.tags do %><%= News.TagView.tag_link(tag) %><% end %>
       </span>
     <% end %>
-    <% type = @story.attrs["type"] || @story.type %>
-    <%= if type == "link" && @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
-      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
+    <%= if show_story_type_or_domain?(@story) do %>
+      <span class="type"><a href="/type/<%= Story.type_or_subtype(@story) %>"><%= t(@conn, "types." <> Story.type_or_subtype(@story)) %></a></span>
     <% else %>
-      <span class="type"><%= t(@conn, "types." <>type) %></span>
+      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
     <% end %>
     <%= format_date(@story.inserted_at) %>
     <%= user_link(@story.user) %>
     <%= flags_for(@story) %>
-    <!--<span><%= @story.score||0 %> <%= inflect t(@conn, "votes.point"), @story.score||0 %></span>-->
     <span>
       <a href="<%= News.Story.url(@story) %>">
       <%= if Enum.empty?(@story.comments) do %>
