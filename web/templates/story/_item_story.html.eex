@@ -9,9 +9,6 @@
     <% else %>
       <a href="<%= News.Story.url(@story) %>"><%= @story.title %></a>
     <% end %>
-    <%= if @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
-      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
-    <% end %>
   </h2>
   <header class="header-common">
     <%= unless Enum.empty?(@story.tags) do %>
@@ -19,8 +16,13 @@
       <%= for tag <- @story.tags do %><%= News.TagView.tag_link(tag) %><% end %>
       </span>
     <% end %>
+    <% type = @story.attrs["type"] || @story.type %>
+    <%= if type == "link" && @story.attrs && Map.has_key?(@story.attrs, "domain") do %>
+      <span class='domain'><a href="/domain/<%= @story.attrs["domain"] %>"><%= @story.attrs["domain"] %></a></span>
+    <% else %>
+      <span class="type"><%= t(@conn, "types." <>type) %></span>
+    <% end %>
     <%= format_date(@story.inserted_at) %>
-    <span class="type"><%= t(@conn, "types." <>(@story.attrs["type"] || @story.type)) %></span>
     <%= user_link(@story.user) %>
     <%= flags_for(@story) %>
     <!--<span><%= @story.score||0 %> <%= inflect t(@conn, "votes.point"), @story.score||0 %></span>-->
