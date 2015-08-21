@@ -6,7 +6,8 @@
     border-bottom: 2px solid rgba(<%= @tag.color_bg %>, 1);
   }
   .tag h1 em {
-    font-weight: 200
+    font-weight: 200;
+    font-style: normal;
   }
 </style>
 
