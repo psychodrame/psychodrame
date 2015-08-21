@@ -27,5 +27,7 @@
     <script src="<%= News.get_env(:static_host, "") <> static_path(@conn, "/js/app.js") %>"></script>
     <script>require("web/static/js/app")</script>
 
+
+  <!-- ver: <%= News.version %> -->
   </body>
 </html>

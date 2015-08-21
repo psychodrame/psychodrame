@@ -1,6 +1,8 @@
 defmodule News do
   use Application
 
+  @git_version System.cmd("git", ~w(describe --always --tags HEAD)) |> elem(0) |> String.replace("\n", "")
+
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
@@ -41,6 +43,8 @@ defmodule News do
   def hashids, do: Application.get_env(:news, :hashids)
 
   def td(p, b \\ []), do: News.I18n.Helper.td(p,b)
+
+  def version, do: @git_version
 
   @modules_string_map %{
     "story"   => News.Story,
