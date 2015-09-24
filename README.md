@@ -38,6 +38,10 @@ For performances reasons and shit, the app needs to be hosted behind a reverse p
 
 Some features (/cached.jpg) also requires a caching server, like Varnish.
 
+#### Static domain & cookie safety
+
+You are advised to create a static domain to serve all the HTML/JS sent by the remote host when using the [preview](https://github.com/hrefhref/news/blob/master/web/templates/cache/iframe_preview.html.eex) feature. This is because cookie leaking is a real world issue. Maybe you should even get another domain just for static content…
+
 Here is an example with nginx and varnish:
 
 ```
