@@ -83,7 +83,7 @@ server {
   }
 
   # The App!
-  location @app { proxy_pass http://$port:$port; }
+  location @app { proxy_pass http://$host:$port; }
 }
 ```
 
