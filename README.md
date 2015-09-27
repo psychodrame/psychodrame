@@ -186,7 +186,14 @@ sub vcl_fini {
 
 ```
 # nginx - multiple static domains on subdirectories
-location ~* /_MAIN_DOMAIN_/(css|js|s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).*) {
+location ~* /_MAIN_DOMAIN_/((css|js|fonts).*) {
+  rewrite /_MAIN_DOMAIN_/(.*) /$1 break;
+  root /usr/home/www.webapps/news/news/priv/static/;
+  gzip_proxied any;
+  gzip_types *;
+  add_header "Access-Control-Allow-Origin" "https://_MAIN_DOMAIN_";
+}
+location ~* /_MAIN_DOMAIN_/(s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).*) {
   rewrite /_MAIN_DOMAIN_/(.*) /$1 break;
   proxy_set_header Host _MAIN_DOMAIN_;
   proxy_set_header "X-Forwarded-For" $proxy_add_x_forwarded_for;
