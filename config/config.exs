@@ -10,7 +10,7 @@ config :news, News.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "LLyxEJ2bNYhpEoH5pNZsFdxgiecyyjvkZGi6E9dMQ3TO1KByI4IGxpH3zZcS7SY+",
-  render_errors: [default_format: "html"],
+  render_errors: [accepts: ["html"]],
   pubsub: [name: News.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

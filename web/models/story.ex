@@ -62,7 +62,7 @@ defmodule News.Story do
     model
     |> cast(params, @required_fields, @optional_fields)
     |> validate_length(:title, min: 5, max: 350)
-    |> validate_unique(:link, on: News.Repo, downcase: true, message: "has already been submitted")
+    |> unique_constraint(:link, message: "has already been submitted")
     |> News.ContentPipeline.changeset("link", "link", :create)
     #|> validate_link_and_extract_attributes
   end
