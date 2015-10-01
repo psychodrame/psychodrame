@@ -6,12 +6,13 @@ defmodule News.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :news, gzip: false,
-    only: ~w(css images js favicon.ico robots.txt)
+    at: "/", from: :news, gzip: true,
+    only: ~w(css images js fonts favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
+    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
@@ -32,5 +33,5 @@ defmodule News.Endpoint do
     key: "_news_key",
     signing_salt: "KGugbLM/"
 
-  plug :router, News.Router
+  plug News.Router
 end
