@@ -2,7 +2,6 @@ defmodule News.Repo.Migrations.UniqueIndexes do
   use Ecto.Migration
 
   def change do
-    execute "CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;"
     alter table(:users) do
       modify(:username, :citext)
     end
