@@ -44,7 +44,7 @@ defmodule News.User do
   def changeset(:create, model, params) do
     model
     |> cast(params, @required_new_fields, @optional_fields)
-    |> validate_unique(:username, on: News.Repo, downcase: true)
+    |> unique_constraint(:username)
     |> validate_length(:username, min: 3, max: 35)
     |> validate_format(:username, ~r/\A[0-9A-Za-z\-_]+\z/i)
     |> validate_length(:password, min: 8)

@@ -25,7 +25,7 @@ defmodule News.Vote do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_unique(:user_id, on: News.Repo, scope: [:votable_id, :votable_type])
+    |> unique_constraint(:user_id, name: :votes_unique_index)
   end
 
   def new_for_user(user) do

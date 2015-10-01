@@ -30,7 +30,7 @@ defmodule News.Tag do
     color_fg = if color[:dark], do: "white", else: "black"
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_unique(:name, on: News.Repo, downcase: true)
+    |> unique_constraint(:name)
     |> validate_format(:name, ~r/\A[0-9A-Za-z\:]+\z/i)
     |> validate_length(:name, min: 4, max: 35)
     |> put_change(:color_bg, color_bg)

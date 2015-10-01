@@ -7,8 +7,7 @@ defmodule News.VoteView do
 
   def vote_form_for(model, conn, display \\ "flex") do
     [type, id] = vote_meta_for(model)
-    rt = Plug.Conn.full_path(conn)
-    vote = %Vote{votable_type: type, votable_id: id, return_to: rt}
+    vote = %Vote{votable_type: type, votable_id: id, return_to: conn.request_path}
     changeset = Vote.changeset(vote)
     voted = previous_vote_for(type, id, conn.assigns[:current_user])
     render "vote.html", changeset: changeset, conn: conn, voted: voted, display: display, model: model

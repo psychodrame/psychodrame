@@ -18,7 +18,7 @@ defmodule News.Mixfile do
   def application do
     [mod: {News, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex, :hackney]]
+                    :phoenix_ecto, :postgrex, :hackney, :tzdata]]
   end
 
   # Specifies which paths to compile per environment
@@ -30,24 +30,24 @@ defmodule News.Mixfile do
   # Type `mix help deps` for examples and options
   defp deps do
     [
-      {:phoenix, "~> 0.14"},
-      {:phoenix_ecto, "~> 0.5"},
+      {:phoenix, "~> 1.0"},
+      {:phoenix_ecto, "~> 1.0"},
       #{:postgrex, ">= 0.0.0"},
       # FIXME Using postgrex master because it supports :inet (PR#92)
       {:postgrex, github: "ericmj/postgrex", override: true},
-      {:phoenix_html, "~> 1.1"},
-      {:phoenix_live_reload, "~> 0.4", only: :dev},
+      {:phoenix_html, "~> 2.0"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 1.0"},
       {:cmark, "~> 0.5" },
       {:hashids, "~> 2.0"},
       {:slugger, "~> 0.0.1"},
-      {:inflex, "~> 1.4.1"},
-      {:timex, "~> 0.16.2"},
-      {:linguist, "~> 0.1.5"},
-      {:hackney, github: "benoitc/hackney"},
-      {:floki, "~> 0.3.2"},
-      {:exredis, ">= 0.2.0"},
+      {:inflex, "~> 1.4"},
+      {:timex, "~> 0.16"},
+      {:linguist, "~> 0.1"},
+      {:hackney, "~> 1.3"},
+      {:floki, "~> 0.3"},
+      {:exredis, "~> 0.2"},
       {:poolboy, "~> 1.4"},
    ]
   end
