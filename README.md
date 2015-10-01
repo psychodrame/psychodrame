@@ -16,6 +16,10 @@ Dependencies: Elixir 1.x, PostgreSQL 9.4+, Redis, NodeJS, libsass, a web + cachi
 6. Bootstrap default content: `(MIX_ENV=prod) mix news.bootstrap_initial_data`
 7. Profit!
 
+Notes for PostgreSQL:
+
+* The extension `citext` needs to be loaded: `CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public`
+
 Notes for FreeBSD:
 
 * python sucks: `export PYTHON=/usr/local/bin/python2`
