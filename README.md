@@ -38,12 +38,23 @@ For performances reasons and shit, the app needs to be hosted behind a reverse p
 
 Some features (/cached.jpg) also requires a caching server, like Varnish.
 
+#### Static domain & cookie safety
+
+You are advised to create a static domain to serve all the HTML/JS sent by the remote host when using the [preview](https://github.com/hrefhref/news/blob/master/web/templates/cache/iframe_preview.html.eex) feature. This is because cookie leaking is a real world issue. Maybe you should even get another domain just for static content…
+
 Here is an example with nginx and varnish:
 
 ```
 # nginx.conf
 server {
-  server_name deadly.io;
+  # This variable is used by Nginx to set the static content host.
+  set $static_host SET YOUR HOST FOR STATIC CONTENT HERE;
+  # This one will be used to locate the SSL certificates, the log files and the Phoenix host.
+  set $host PUT THE DOMAIN NAME HERE;
+  # Phoenix endpoint
+  set $port 4000;
+
+  server_name $host;
 
   # PLAINTEXT:
   listen 80;
@@ -52,11 +63,11 @@ server {
   # OR FOR SSL:
   #listen 443;
   #listen [::]:443;
-  #ssl_certificate /usr/local/etc/nginx/ssl/deadly.io.crt;
-  #ssl_certificate_key /usr/local/etc/nginx/ssl/deadly.io.key;
+  #ssl_certificate /usr/local/etc/nginx/ssl/$host.crt;
+  #ssl_certificate_key /usr/local/etc/nginx/ssl/$host.key;
 
-  error_log /var/log/nginx/deadly/error.log;
-  access_log /var/log/nginx/deadly/access.log main;
+  error_log /var/log/nginx/$host/error.log;
+  access_log /var/log/nginx/$host/access.log main;
 
   root /usr/home/www.webapps/news/news/priv/static/;
   try_files $uri @app;
@@ -68,16 +79,18 @@ server {
   #  location ~* /s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).* { proxy_pass http://127.0.0.1:82; }
   # Safe: Redirect all requests to static domain
   location ~* /s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).* {
-    rewrite ^ $scheme://static.host/$request_uri permanent;
+    rewrite ^ $scheme://$static_host:$port$request_uri permanent;
   }
 
   # The App!
-  location @app { proxy_pass http://news.cyclone.r:4000; }
+  location @app { proxy_pass http://$host:$port; }
 }
 ```
 
+#### Varnish 3
 ```
 # varnish  - only partial because varnish configs are huuuuge
+vcl 3.0;
 
 backend deadly {
   .host = "10.66.69.55";
@@ -91,9 +104,96 @@ sub vcl_recv {
 }
 ```
 
+#### Varnish 4
+
+```
+vcl 4.0;
+
+backend psychodrame {
+  .host = "127.0.0.1";
+  .port = "4000";
+}
+
+sub vcl_recv {
+    if (req.http.host == "static.YOURHOST") {
+      set req.backend_hint = psychodrame;
+      return (pass);
+    }
+    if (req.restarts == 0) {
+      if (req.http.x-forwarded-for) {
+          set req.http.X-Forwarded-For =
+              req.http.X-Forwarded-For + ", " + client.ip;
+      } else {
+          set req.http.X-Forwarded-For = client.ip;
+      }
+    }
+    if (req.method != "GET" &&
+      req.method != "HEAD" &&
+      req.method != "PUT" &&
+      req.method != "POST" &&
+      req.method != "TRACE" &&
+      req.method != "OPTIONS" &&
+      req.method != "DELETE") {
+        /* Non-RFC2616 or CONNECT which is weird. */
+        return (pipe);
+    }
+    if (req.method != "GET" && req.method != "HEAD") {
+        /* We only deal with GET and HEAD by default */
+        return (pass);
+    }
+    if (req.http.Authorization || req.http.Cookie) {
+        /* Not cacheable by default */
+        return (pass);
+    }
+    return (hash);
+}
+
+sub vcl_pipe {
+    return (pipe);
+}
+
+sub vcl_pass {
+    return (fetch);
+}
+sub vcl_miss {
+    return (fetch);
+}
+sub vcl_backend_response {
+    if (beresp.ttl <= 0s ||
+        beresp.http.Set-Cookie ||
+        beresp.http.Vary == "*") {
+              /*
+               * Mark as "Hit-For-Pass" for the next 2 minutes
+               */
+              set beresp.uncacheable = true;
+              set beresp.ttl = 120 s;
+    }
+    return (deliver);
+}
+
+sub vcl_deliver {
+    return (deliver);
+}
+
+sub vcl_init {
+      return (ok);
+}
+
+sub vcl_fini {
+      return (ok);
+}
+```
+
 ```
 # nginx - multiple static domains on subdirectories
-location ~* /_MAIN_DOMAIN_/(css|js|s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).*) {
+location ~* /_MAIN_DOMAIN_/((css|js|fonts).*) {
+  rewrite /_MAIN_DOMAIN_/(.*) /$1 break;
+  root /usr/home/www.webapps/news/news/priv/static/;
+  gzip_proxied any;
+  gzip_types *;
+  add_header "Access-Control-Allow-Origin" "https://_MAIN_DOMAIN_";
+}
+location ~* /_MAIN_DOMAIN_/(s/[A-Za-z0-9]+/.*/(cached|thumb|preview_html).*) {
   rewrite /_MAIN_DOMAIN_/(.*) /$1 break;
   proxy_set_header Host _MAIN_DOMAIN_;
   proxy_set_header "X-Forwarded-For" $proxy_add_x_forwarded_for;
