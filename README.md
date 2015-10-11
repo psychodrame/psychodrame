@@ -8,8 +8,9 @@ A reddit-like app.
 
 Dependencies: Elixir 1.x, PostgreSQL 9.4+, Redis, NodeJS, libsass, a web + caching server, ImageMagick, JPEGoptim.
 
-1. Install dependencies: `mix deps.get && npm install`
-2. Configure: `cp config/site.exs.sample config/site.exs && $EDITOR config/site.exs`
+1. Configure: `cp config/site.exs.sample config/site.exs && $EDITOR config/site.exs`
+2. Install dependencies: `mix deps.get && npm install`
+3. Compile the consolidated protocols: `(MIX_ENV=prod) mix compile`
 3. Migrate database: `(MIX_ENV=prod) mix ecto.migrate`
 4. (production only) build assets: `./node_modules/.bin/brunch build --production`
 5. (production only) build digest: `(MIX_ENV=prod) mix phoenix.digest`
@@ -18,7 +19,7 @@ Dependencies: Elixir 1.x, PostgreSQL 9.4+, Redis, NodeJS, libsass, a web + cachi
 
 Notes for PostgreSQL:
 
-* The extension `citext` needs to be loaded: `CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public`
+* The extension `citext` needs to be loaded: `CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;` before `3.`.
 
 Notes for FreeBSD:
 
