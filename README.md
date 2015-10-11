@@ -4,13 +4,15 @@ A reddit-like app.
 
 ## setup
 
+Please read *all* the document before doing anything. You might see useful tips.
+
 ### installation
 
 Dependencies: Elixir 1.x, PostgreSQL 9.4+, Redis, NodeJS, libsass, a web + caching server, ImageMagick, JPEGoptim.
 
 1. Configure: `cp config/site.exs.sample config/site.exs && $EDITOR config/site.exs`
-2. Install dependencies: `mix deps.get && npm install`
-3. Compile the consolidated protocols: `(MIX_ENV=prod) mix compile`
+2. Install dependencies: `mix deps.get && npm install` 
+3. Compile the consolidated protocols: `(MIX_ENV=prod) mix compile` (if something fails, such as a .c file compilation, launch `mix clean`, rinse, and repeat `3`.)
 3. Migrate database: `(MIX_ENV=prod) mix ecto.migrate`
 4. (production only) build assets: `./node_modules/.bin/brunch build --production`
 5. (production only) build digest: `(MIX_ENV=prod) mix phoenix.digest`
