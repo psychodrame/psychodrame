@@ -17,7 +17,7 @@
     <div class="container <%= if @conn.assigns[:authflag], do: "authflag-"<>@conn.assigns[:authflag].name %>" role="main">
       <%= render "_header.html", conn: @conn %>
 
-      <div id="inner"><%= @inner %></div>
+      <div id="inner"><%= render @view_module, @view_template, assigns %></div>
 
       <%= render "_footer.html", conn: @conn %>
     </div> <!-- /container -->

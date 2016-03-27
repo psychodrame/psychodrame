@@ -30,11 +30,11 @@ defmodule News.Mixfile do
   # Type `mix help deps` for examples and options
   defp deps do
     [
-      {:phoenix, "~> 1.0"},
-      {:phoenix_ecto, "~> 1.0"},
+      {:phoenix, "~> 1.1.4"},
+      {:phoenix_ecto, "~> 2.0.1"},
       #{:postgrex, ">= 0.0.0"},
       # FIXME Using postgrex master because it supports :inet (PR#92)
-      {:postgrex, github: "ericmj/postgrex", override: true},
+      {:postgrex, "~> 0.11.1", override: true},
       {:phoenix_html, "~> 2.0"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:cowboy, "~> 1.0"},
